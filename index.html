@@ -7,7 +7,7 @@
 <title>🥟 Candeias Jr - PDV</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;backghround:#f0f0f0;color:#222;min-height:100vh}
+body{font-family:'Segoe UI',sans-serif;background:#f0f0f0;color:#222;min-height:100vh}
 :root{--red:#c0392b;--red2:#e74c3c;--green:#27ae60;--green2:#2ecc71;--blue:#2980b9;--gold:#e67e22;--dark:#ffffff;--darker:#f0f0f0;--surface:#f8f8f8}
 
 /* TELAS */
@@ -2007,6 +2007,51 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
   };
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',showUpdate); }
   else { showUpdate(); }
+})();
+</script>
+<script>
+/* PDV Candeias Jr — destrava a area Gerencial. Senha criada no 1o acesso, guardada por hash. */
+(function(){
+  var K='opg_admin_hash_cj';
+  function getHash(){try{return localStorage.getItem(K);}catch(e){return null;}}
+  function setHash(h){try{localStorage.setItem(K,h);}catch(e){}}
+  async function sha(s){
+    try{
+      var b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+    }catch(e){
+      var h=5381; for(var i=0;i<s.length;i++){h=((h<<5)+h)+s.charCodeAt(i);h|=0;} return 'f'+(h>>>0).toString(16);
+    }
+  }
+  function showAdmin(){
+    document.querySelectorAll('.tela').forEach(function(t){t.classList.remove('ativa');});
+    var el=document.getElementById('tela-admin'); if(el)el.classList.add('ativa');
+    if(typeof window.showAdminTab==='function'){try{showAdminTab('rel');}catch(e){}}
+  }
+  window.fazerLogin=async function(){
+    var inp=document.getElementById('admin-senha');
+    var err=document.getElementById('login-erro');
+    var val=((inp&&inp.value)||'').trim();
+    var stored=getHash();
+    if(!stored){
+      if(val.length<4){ if(err){err.textContent='Crie uma senha de no minimo 4 caracteres';err.style.display='block';} return; }
+      setHash(await sha(val));
+      if(inp)inp.value=''; if(err)err.style.display='none';
+      showAdmin(); return;
+    }
+    if((await sha(val))===stored){
+      if(inp)inp.value=''; if(err)err.style.display='none'; showAdmin();
+    }else if(err){ err.textContent='Senha incorreta!'; err.style.display='block'; }
+  };
+  function tunarLabel(){
+    var p=document.querySelector('#tela-admin-login .login-box p');
+    var btn=document.querySelector('#tela-admin-login .login-box .btn-red');
+    if(!getHash()){ if(p)p.textContent='Crie a senha de administrador (1o acesso)'; if(btn)btn.textContent='🔒 Criar senha'; }
+    else { if(p)p.textContent='Insira a senha de administrador'; if(btn)btn.textContent='🔓 Entrar'; }
+  }
+  var _ir=window.irAdmin;
+  window.irAdmin=function(){ if(typeof _ir==='function')_ir.apply(this,arguments); tunarLabel(); };
+  if(document.readyState!=='loading')tunarLabel(); else document.addEventListener('DOMContentLoaded',tunarLabel);
 })();
 </script>
 </body>
