@@ -194,6 +194,25 @@ table tr:hover td{background:rgba(192,57,43,.06)}
 .login-box{max-width:360px;margin:60px auto;background:#ffffff;border:2px solid rgba(192,57,43,.3);border-radius:18px;padding:35px;text-align:center}
 .login-box h2{color:var(--red);margin-bottom:8px}
 .login-box p{color:#666;font-size:.85em;margin-bottom:22px}
+/* ===== AJUSTE PDV: painel de valores menor + itens sempre visiveis ===== */
+.cart-items{flex:1 1 auto;min-height:140px;overflow-y:auto}
+.cart-foot{flex:0 0 auto;max-height:54vh;overflow-y:auto;padding:6px 12px 8px}
+.cart-foot .tl{margin-bottom:1px}
+.cart-foot .tl.big .lab{font-size:.85em}
+.cart-foot .tl.big .val{font-size:1.1em}
+.cart-foot .pgto-grid{margin:5px 0;gap:4px}
+.cart-foot .pbtn{padding:6px 4px;font-size:.72em}
+.cart-foot .troco-wrap{margin:3px 0}
+.cart-foot .troco-wrap input{padding:5px 9px;font-size:.82em}
+.cart-foot .div-pgto-btn{padding:6px;margin:3px 0;font-size:.74em}
+.cart-foot .fg{margin-top:3px;margin-bottom:0}
+.cart-foot textarea{height:30px;min-height:30px}
+.cart-foot .btn-lg{padding:8px 12px;font-size:.88em;margin-bottom:4px}
+/* ===== Destacar mesas ABERTAS na tela de Mesas ===== */
+.mesa-card.ocupada:not(.cliente){border-color:var(--gold)!important;border-width:4px!important;background:rgba(243,156,18,.22)!important;box-shadow:0 6px 20px rgba(243,156,18,.4)}
+.mesa-card.ocupada:not(.cliente) .mesa-status{color:#b9770e!important;font-weight:800}
+.mesa-card.ocupada:not(.cliente) .mesa-total{font-size:1.08em;font-weight:800}
+.mesa-itens-badge{width:26px;height:26px;font-size:.8em}
 </style>
 
 <!-- Firebase SDK -->
@@ -2052,6 +2071,32 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
   var _ir=window.irAdmin;
   window.irAdmin=function(){ if(typeof _ir==='function')_ir.apply(this,arguments); tunarLabel(); };
   if(document.readyState!=='loading')tunarLabel(); else document.addEventListener('DOMContentLoaded',tunarLabel);
+})();
+</script>
+<script>
+/* ===== Contador de mesas abertas no topo do PDV ===== */
+(function(){
+  function criarBadge(){
+    var ex=document.getElementById('badge-mesas-abertas'); if(ex) return ex;
+    var hdr=document.querySelector('#tela-pdv .pdv-hdr'); if(!hdr) return null;
+    var row=hdr.lastElementChild;
+    var b=document.createElement('button');
+    b.id='badge-mesas-abertas'; b.className='btn btn-gold btn-sm';
+    b.style.display='none';
+    b.onclick=function(){ if(typeof voltarMesas==='function') voltarMesas(); };
+    if(row) row.insertBefore(b,row.firstChild); else hdr.appendChild(b);
+    return b;
+  }
+  function atualizar(){
+    var b=criarBadge(); if(!b) return;
+    var mesas=(window.state&&state.mesas)||[];
+    var n=mesas.filter(function(m){return (m.itens&&m.itens.length)||(m.pagos&&m.pagos.length);}).length;
+    if(n>0){ b.textContent='\uD83D\uDFE1 '+n+(n===1?' mesa aberta':' mesas abertas'); b.style.display=''; }
+    else{ b.style.display='none'; }
+  }
+  setInterval(atualizar,1500);
+  document.addEventListener('DOMContentLoaded',atualizar);
+  setTimeout(atualizar,800);
 })();
 </script>
 </body>
