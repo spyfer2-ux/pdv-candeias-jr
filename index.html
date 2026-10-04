@@ -167,18 +167,26 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f0f0;color:#222;min-height:
 @media print{
 *{box-sizing:border-box!important}
 .no-print{display:none!important}
+body>*:not(.modal){display:none!important}
 .tela,.tela.ativa,.tela.bloco.ativa{display:none!important}
 html,body{width:100%!important;background:#fff!important;color:#000!important;margin:0!important;padding:0!important;min-height:0!important;height:auto!important}
 .modal.show{display:block!important;position:static!important;background:none!important;padding:0!important;margin:0!important}
 .mbox{border:none!important;border-radius:0!important;padding:0!important;max-width:100%!important;width:100%!important;max-height:none!important;overflow:visible!important;box-shadow:none!important;margin:0!important}
 .mbox h3{display:none!important}
 .mbtns{display:none!important}
-.recibo-print{display:block!important;width:100%!important;max-width:100%!important;padding:0!important}
+.recibo-print{display:block!important;width:100%!important;max-width:100%!important;padding:3mm 5mm 2mm!important}
 }
-.recibo-print{font-family:'Courier New',monospace;font-size:.82em;line-height:1.7;color:#000;background:#fff;padding:0;width:100%;max-width:100%}
-.recibo-print hr{border:none;border-top:1px dashed #000;margin:8px 0}
+/* Impressao compacta: sem margem do navegador, letra em negrito, itens logo no topo */
+@page{margin:0}
+.recibo-print{font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;line-height:1.2;color:#000;background:#fff;padding:0;width:100%;max-width:100%}
+.recibo-print hr{border:none;border-top:1px dashed #000;margin:3px 0}
 .recibo-print .rc-center{text-align:center}
 .recibo-print .rc-bold{font-weight:700}
+.recibo-print .rc-big{font-size:1.25em}
+.recibo-print .rc-lin{display:flex;justify-content:space-between;align-items:baseline;gap:8px;break-inside:avoid}
+.recibo-print .rc-lin>:last-child{white-space:nowrap}
+.recibo-print .rc-it{padding-left:1.7em;text-indent:-1.7em;break-inside:avoid}
+.recibo-print .rc-it div{text-indent:0}
 
 /* MISC */
 .empty{text-align:center;padding:40px 20px;color:#444}
@@ -1036,7 +1044,7 @@ function imprimirComanda() {
 }
 
 function gerarComandaHTML(mesa, reimpressao) {
-  var agora = new Date().toLocaleString('pt-BR');
+  var agora = new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
   var _grpComanda = [];
 mesa.itens.forEach(function(item){
 var _ch = item.nome + '|' + (item.obs||'') + '|' + ((item.adicionais||[]).map(function(a){return a.nome;}).join(','));
@@ -1045,9 +1053,9 @@ if (_e) { _e.qty += (item.qty||1); }
 else { var _c = JSON.parse(JSON.stringify(item)); _c._ch = _ch; _c.qty = (item.qty||1); _grpComanda.push(_c); }
 });
 var itensHTML = _grpComanda.length > 0 ? _grpComanda.map(function(item){
-var addsComanda = (item.adicionais && item.adicionais.length) ? '<div style="font-size:.85em;padding-left:15px;color:#555">+ ' + item.adicionais.map(function(a){return a.nome;}).join(', ') + '</div>' : '';
-return '<div>' + item.qty + 'x ' + item.nome + addsComanda + (item.obs ? '<div style="font-size:.9em;padding-left:15px;font-style:italic">Obs: ' + item.obs + '</div>' : '') + '</div>';
-}).join('') : '<div style="color:#999">Sem itens pendentes</div>';
+var addsComanda = (item.adicionais && item.adicionais.length) ? '<div>+ ' + item.adicionais.map(function(a){return a.nome;}).join(', ') + '</div>' : '';
+return '<div class="rc-it">' + item.qty + 'x ' + item.nome + addsComanda + (item.obs ? '<div>OBS: ' + item.obs + '</div>' : '') + '</div>';
+}).join('') : '<div>Sem itens pendentes</div>';
   var pagosHTML = mesa.pagos.length > 0 ?
     '<hr><div style="font-size:.9em"><strong>JÁ PAGO:</strong></div>' +
     mesa.pagos.map(function(p){
@@ -1057,28 +1065,23 @@ return '<div>' + item.qty + 'x ' + item.nome + addsComanda + (item.obs ? '<div s
   var pago = mesa.pagos.reduce(function(s,p){return s+p.valor;},0);
   var pendente = Math.max(0, total - pago);
   return '<div class="recibo-print">' +
-    '<div class="rc-center" style="margin-bottom:4px"><img src="https://spyfer2-ux.github.io/pdv-pastelaria/logo.png" style="max-width:60px;max-height:40px" onerror="this.style.display=\'none\'"></div>' +
-    '<div class="rc-center rc-bold" style="font-size:1.1em">' + ESTAB + '</div>' +
-    '<div class="rc-center">COMANDA' + (reimpressao ? ' (REIMPRESSÃO)' : '') + '</div>' +
+    '<div class="rc-center">' + ESTAB + ' - COMANDA' + (reimpressao ? ' (REIMPRESSÃO)' : '') + '</div>' +
+    '<div class="rc-lin"><span class="rc-big">MESA ' + mesa.num + '</span><span>' + agora + '</span></div>' +
     '<hr>' +
-    '<div>Mesa: ' + mesa.num + '</div>' +
-    '<div>Data: ' + agora + '</div>' +
-    '<hr>' +
-    '<div class="rc-bold">ITENS:</div>' +
     itensHTML +
     pagosHTML +
     '<hr>' +
-    '<div>Total: R$ ' + total.toFixed(2).replace('.',',') + '</div>' +
-    (pago > 0 ? '<div>Pago: R$ ' + pago.toFixed(2).replace('.',',') + '</div>' : '') +
-    '<div class="rc-bold">PENDENTE: R$ ' + pendente.toFixed(2).replace('.',',') + '</div>' +
+    (pago > 0 ? '<div class="rc-lin"><span>Total</span><span>R$ ' + total.toFixed(2).replace('.',',') + '</span></div>' +
+      '<div class="rc-lin"><span>Pago</span><span>R$ ' + pago.toFixed(2).replace('.',',') + '</span></div>' : '') +
+    '<div class="rc-lin rc-big"><span>' + (pago > 0 ? 'PENDENTE' : 'TOTAL') + '</span><span>R$ ' + pendente.toFixed(2).replace('.',',') + '</span></div>' +
     '</div>';
 }
 
 function mostrarRecibo(v) {
   var pgtoStr = v.pagamentos.map(function(p){
-    return p.pgtoNome + ': R$ ' + p.valor.toFixed(2).replace('.',',') +
-    (p.troco > 0 ? ' (troco: R$ ' + p.troco.toFixed(2).replace('.',',') + ')' : '');
-  }).join('<br>');
+    return '<div class="rc-lin"><span>' + p.pgtoNome + '</span><span>R$ ' + p.valor.toFixed(2).replace('.',',') + '</span></div>' +
+    (p.troco > 0 ? '<div class="rc-lin"><span>Troco</span><span>R$ ' + p.troco.toFixed(2).replace('.',',') + '</span></div>' : '');
+  }).join('');
   var _grpItens = [];
 v.todosItens.forEach(function(i){
 var _chave = i.nome + '|' + i.preco + '|' + (i.obs||'') + '|' + ((i.adicionais||[]).map(function(a){return a.nome;}).join(','));
@@ -1087,25 +1090,20 @@ if (_ex) { _ex.qty += (i.qty||1); }
 else { var _c = JSON.parse(JSON.stringify(i)); _c._chave = _chave; _c.qty = (i.qty||1); _grpItens.push(_c); }
 });
 var itensStr = _grpItens.map(function(i){
-var addsRec = (i.adicionais && i.adicionais.length) ? ' <span style="font-size:.8em;color:#c0392b">[+' + i.adicionais.map(function(a){return a.nome;}).join(', ') + ']</span>' : '';
-return i.qty + 'x ' + i.nome + addsRec + ' = R$ ' + (i.preco*i.qty).toFixed(2).replace('.',',') +
-(i.obs ? ' <span style="font-size:.85em;color:#888">('+i.obs+')</span>' : '');
-}).join('<br>');
+var addsRec = (i.adicionais && i.adicionais.length) ? '<div>+ ' + i.adicionais.map(function(a){return a.nome;}).join(', ') + '</div>' : '';
+return '<div class="rc-lin"><div class="rc-it">' + i.qty + 'x ' + i.nome + addsRec + (i.obs ? '<div>OBS: ' + i.obs + '</div>' : '') + '</div><div>' + (i.preco*i.qty).toFixed(2).replace('.',',') + '</div></div>';
+}).join('');
   document.getElementById('recibo-conteudo').innerHTML =
     '<div class="recibo-print">' +
-    '<div class="rc-center" style="margin-bottom:4px"><img src="https://spyfer2-ux.github.io/pdv-pastelaria/logo.png" style="max-width:60px;max-height:40px" onerror="this.style.display=\'none\'"></div>' +
-    '<div class="rc-center rc-bold">' + ESTAB + '</div>' +
+    '<div class="rc-center rc-big">' + ESTAB + '</div>' +
     '<div class="rc-center">COMPROVANTE DE VENDA</div>' +
-    '<hr>' +
-    'Mesa: ' + v.mesa + '<br>' +
-    'Pedido #' + v.id + '<br>' +
-    (v.clienteNome ? 'Cliente: ' + v.clienteNome + '<br>' : '') +
-    (v.clienteEndereco ? 'Endereco: ' + v.clienteEndereco + '<br>' : '') +
-    'Data: ' + new Date(v.data).toLocaleString('pt-BR') +
+    '<div class="rc-lin"><span>Mesa ' + v.mesa + ' - Pedido #' + v.id + '</span><span>' + new Date(v.data).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}) + '</span></div>' +
+    (v.clienteNome ? '<div>Cliente: ' + v.clienteNome + '</div>' : '') +
+    (v.clienteEndereco ? '<div>Endereco: ' + v.clienteEndereco + '</div>' : '') +
     '<hr>' +
     itensStr +
     '<hr>' +
-    '<strong>TOTAL: R$ ' + v.totalGeral.toFixed(2).replace('.',',') + '</strong><br>' +
+    '<div class="rc-lin rc-big"><span>TOTAL</span><span>R$ ' + v.totalGeral.toFixed(2).replace('.',',') + '</span></div>' +
     pgtoStr +
     '</div>';
   abrirModal('modal-recibo');
