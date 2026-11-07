@@ -1369,10 +1369,12 @@ function gerarRelatorios() {
       var pid = ['hoje','semana','mes','ano','todos'][i];
       return '<button class="tab rel-per-tab ' + (i===4?'on':'') + '" data-per="' + pid + '" onclick="filtrarRelPeriodo(\'' + pid + '\')">' + p + '</button>';
     }).join('') +
+    '<select id="rel-mes-sel" class="tab" onchange="filtrarRelPeriodo(this.value || \'todos\')" title="Escolher um mês" style="outline:none"></select>' +
     '</div>' +
     '<div id="rel-nuvem-status" class="no-print" style="font-size:.8em;color:#888;margin:4px 0 10px"></div>' +
     '<div id="rel-periodo-content">' + gerarRelConteudo(relTodasVendas()) + '</div>';
   el.innerHTML = html;
+  relAtualizarMeses();
   relAtualizarStatus();
   relCarregarNuvem();
 }
@@ -1390,13 +1392,35 @@ function filtrarRelPeriodo(periodo) {
   else if (periodo === 'semana') filtrada = vendas.filter(function(v){ return new Date(v.data) >= semAgo; });
   else if (periodo === 'mes') filtrada = vendas.filter(function(v){ var d=new Date(v.data); return (d.getMonth()+'-'+d.getFullYear()) === mesAtual; });
   else if (periodo === 'ano') filtrada = vendas.filter(function(v){ return new Date(v.data).getFullYear() === anoAtual; });
+  else if (/^m:\d{4}-\d{2}$/.test(periodo)) { var chave = periodo.slice(2); filtrada = vendas.filter(function(v){ var d = new Date(v.data); return !isNaN(d) && relChaveMes(d) === chave; }); }
   else filtrada = vendas;
   var cont = document.getElementById('rel-periodo-content');
   if (cont) cont.innerHTML = gerarRelConteudo(filtrada);
   document.querySelectorAll('.rel-per-tab').forEach(function(el){
     el.classList.toggle('on', el.getAttribute('data-per') === periodo);
   });
+  relAtualizarMeses();
   relAtualizarStatus();
+}
+
+// Lista de meses que tem vendas (mais recente primeiro), com a quantidade de vendas
+var REL_NOMES_MES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function relChaveMes(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+function relAtualizarMeses() {
+  var sel = document.getElementById('rel-mes-sel');
+  if (!sel) return;
+  var cont = {};
+  relTodasVendas().forEach(function(v){ var d = new Date(v.data); if (isNaN(d)) return; var k = relChaveMes(d); cont[k] = (cont[k] || 0) + 1; });
+  var atual = window._relPeriodoAtual || '';
+  var op = 'style="color:#333;background:#fff"';
+  sel.innerHTML = '<option value="" ' + op + '>📅 Escolher mês</option>' +
+    Object.keys(cont).sort().reverse().map(function(k){
+      var partes = k.split('-');
+      var nome = REL_NOMES_MES[Number(partes[1]) - 1] + ' ' + partes[0];
+      return '<option value="m:' + k + '" ' + op + (atual === 'm:' + k ? ' selected' : '') + '>' + nome + ' — ' + cont[k] + (cont[k] === 1 ? ' venda' : ' vendas') + '</option>';
+    }).join('');
+  if (!/^m:/.test(atual)) sel.value = '';
+  sel.classList.toggle('on', /^m:/.test(atual));
 }
 
 function gerarRelConteudo(vendas) {
