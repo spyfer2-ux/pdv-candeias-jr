@@ -1293,43 +1293,90 @@ function showAdminTab(tab) {
 }
 
 // ======= RELATÓRIOS =======
-function gerarRelatorios() {
-  var vendas = state.vendas;
-  var el = document.getElementById('admin-rel');
-  if (!vendas.length) {
-    el.innerHTML = '<div class="empty"><div class="ei">📊</div><p>Nenhuma venda registrada ainda</p></div>';
-    return;
+// Junta as vendas deste aparelho com as da nuvem (Firebase), sem duplicar.
+window._relVendasNuvem = null;   // null = ainda nao carregou
+window._relNuvemStatus = '';
+window._relPeriodoAtual = 'todos';
+
+function relNormalizarVendaNuvem(d) {
+  var itens = (d.todosItens || d.itens || []).map(function(it){
+    var prod = (state.produtos || []).find(function(p){ return p.nome === (it.nomeOriginal || it.nome); });
+    var r = { nome: it.nome || 'Item', cat: it.cat || (prod && prod.cat) || '', preco: Number(it.preco) || 0,
+              qty: Number(it.qty || it.qtd) || 1, adicionais: it.adicionais || [] };
+    if (it.fracaoDe) { r.fracaoDe = it.fracaoDe; r.original = { nome: it.nomeOriginal || it.nome, qty: 1 }; }
+    return r;
+  });
+  var pags = Array.isArray(d.pagamentos) ? d.pagamentos : [];
+  var total = d.totalGeral != null ? d.totalGeral : d.total;
+  if (total == null) {
+    total = 0; pags.forEach(function(p){ total += Number(p.valor) || 0; });
+    if (!total) itens.forEach(function(i){ total += i.preco * i.qty; });
   }
+  var data = d.data || (d.timestamp ? new Date(d.timestamp).toISOString() : null);
+  return { id: d.id || '☁', data: data, mesa: d.mesa || '', estab: d.estab || '', pagamentos: pags,
+           todosItens: itens, totalGeral: Number(total) || 0, _nuvem: true };
+}
 
-  // Período atual
-  var agora = new Date();
-  var hoje = agora.toDateString();
-  var semAgo = new Date(agora - 7*24*3600000);
-  var mesAtual = agora.getMonth() + '-' + agora.getFullYear();
-  var anoAtual = agora.getFullYear();
+function relTodasVendas() {
+  var locais = state.vendas || [];
+  if (!window._relVendasNuvem) return locais;
+  var vistas = {};
+  locais.forEach(function(v){ vistas[v.data] = true; });
+  var extras = window._relVendasNuvem.filter(function(v){ return v.data && !vistas[v.data]; });
+  return locais.concat(extras).sort(function(x,y){ return new Date(x.data) - new Date(y.data); });
+}
 
-  var vHoje = vendas.filter(function(v){ return new Date(v.data).toDateString() === hoje; });
-  var vSemana = vendas.filter(function(v){ return new Date(v.data) >= semAgo; });
-  var vMes = vendas.filter(function(v){ var d=new Date(v.data); return (d.getMonth()+'-'+d.getFullYear()) === mesAtual; });
-  var vAno = vendas.filter(function(v){ return new Date(v.data).getFullYear() === anoAtual; });
+function relCarregarNuvem() {
+  window._relNuvemStatus = '☁️ Buscando vendas na nuvem...';
+  relAtualizarStatus();
+  var tentativas = 0;
+  (function esperar(){
+    var fb = window._pdvFirestore;
+    if (!fb || !fb.db) {
+      if (++tentativas < 20) return setTimeout(esperar, 300);
+      window._relNuvemStatus = '⚠️ Sem conexão com a nuvem — mostrando só as vendas deste aparelho.';
+      return relAtualizarStatus();
+    }
+    fb.getDocs(fb.collection(fb.db, 'pdv_vendas_candeiasjr')).then(function(snap){
+      var lista = [];
+      snap.forEach(function(doc){ lista.push(relNormalizarVendaNuvem(doc.data() || {})); });
+      window._relVendasNuvem = lista;
+      window._relNuvemStatus = '☁️ ' + lista.length + ' venda(s) na nuvem + ' + (state.vendas || []).length + ' neste aparelho (sem duplicar).';
+      filtrarRelPeriodo(window._relPeriodoAtual);
+    }).catch(function(e){
+      console.warn('[Relatorios] nuvem', e);
+      window._relNuvemStatus = (e && /permission/i.test(e.message || e.code || ''))
+        ? '⚠️ A nuvem bloqueou a leitura (Regras do Firebase) — mostrando só as vendas deste aparelho.'
+        : '⚠️ Erro ao ler a nuvem — mostrando só as vendas deste aparelho.';
+      relAtualizarStatus();
+    });
+  })();
+}
 
-  function totalV(arr) { return arr.reduce(function(s,v){return s+v.totalGeral;},0); }
+function relAtualizarStatus() {
+  var el = document.getElementById('rel-nuvem-status');
+  if (el) el.textContent = window._relNuvemStatus;
+}
 
-  // Período selecionado
-  var periodoSel = 'todos';
+function gerarRelatorios() {
+  var el = document.getElementById('admin-rel');
+  window._relPeriodoAtual = 'todos';
   var html = '<div class="tabs no-print">' +
     ['Hoje','7 Dias','Mês','Ano','Tudo'].map(function(p,i){
       var pid = ['hoje','semana','mes','ano','todos'][i];
       return '<button class="tab rel-per-tab ' + (i===4?'on':'') + '" data-per="' + pid + '" onclick="filtrarRelPeriodo(\'' + pid + '\')">' + p + '</button>';
     }).join('') +
     '</div>' +
-    '<div id="rel-periodo-content">' + gerarRelConteudo(vendas) + '</div>';
+    '<div id="rel-nuvem-status" class="no-print" style="font-size:.8em;color:#888;margin:4px 0 10px"></div>' +
+    '<div id="rel-periodo-content">' + gerarRelConteudo(relTodasVendas()) + '</div>';
   el.innerHTML = html;
+  relAtualizarStatus();
+  relCarregarNuvem();
 }
 
-window._relVendasAtual = null;
 function filtrarRelPeriodo(periodo) {
-  var vendas = state.vendas;
+  window._relPeriodoAtual = periodo;
+  var vendas = relTodasVendas();
   var agora = new Date();
   var semAgo = new Date(agora - 7*24*3600000);
   var mesAtual = agora.getMonth() + '-' + agora.getFullYear();
@@ -1341,10 +1388,12 @@ function filtrarRelPeriodo(periodo) {
   else if (periodo === 'mes') filtrada = vendas.filter(function(v){ var d=new Date(v.data); return (d.getMonth()+'-'+d.getFullYear()) === mesAtual; });
   else if (periodo === 'ano') filtrada = vendas.filter(function(v){ return new Date(v.data).getFullYear() === anoAtual; });
   else filtrada = vendas;
-  document.getElementById('rel-periodo-content').innerHTML = gerarRelConteudo(filtrada);
+  var cont = document.getElementById('rel-periodo-content');
+  if (cont) cont.innerHTML = gerarRelConteudo(filtrada);
   document.querySelectorAll('.rel-per-tab').forEach(function(el){
     el.classList.toggle('on', el.getAttribute('data-per') === periodo);
   });
+  relAtualizarStatus();
 }
 
 function gerarRelConteudo(vendas) {
