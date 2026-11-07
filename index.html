@@ -1320,7 +1320,7 @@ function gerarRelatorios() {
   var html = '<div class="tabs no-print">' +
     ['Hoje','7 Dias','Mês','Ano','Tudo'].map(function(p,i){
       var pid = ['hoje','semana','mes','ano','todos'][i];
-      return '<button class="tab ' + (i===4?'on':'') + '" onclick="filtrarRelPeriodo(' + JSON.stringify(pid) + ')">' + p + '</button>';
+      return '<button class="tab rel-per-tab ' + (i===4?'on':'') + '" data-per="' + pid + '" onclick="filtrarRelPeriodo(\'' + pid + '\')">' + p + '</button>';
     }).join('') +
     '</div>' +
     '<div id="rel-periodo-content">' + gerarRelConteudo(vendas) + '</div>';
@@ -1342,23 +1342,22 @@ function filtrarRelPeriodo(periodo) {
   else if (periodo === 'ano') filtrada = vendas.filter(function(v){ return new Date(v.data).getFullYear() === anoAtual; });
   else filtrada = vendas;
   document.getElementById('rel-periodo-content').innerHTML = gerarRelConteudo(filtrada);
-  document.querySelectorAll('.tab').forEach(function(el){
-    el.classList.remove('on');
-    if (el.textContent.toLowerCase().indexOf(periodo.slice(0,3)) >= 0 || (periodo==='todos'&&el.textContent==='Tudo')) el.classList.add('on');
+  document.querySelectorAll('.rel-per-tab').forEach(function(el){
+    el.classList.toggle('on', el.getAttribute('data-per') === periodo);
   });
 }
 
 function gerarRelConteudo(vendas) {
   if (!vendas.length) return '<div class="empty"><div class="ei">📊</div><p>Sem vendas no período</p></div>';
 
-  var totalGeral = vendas.reduce(function(s,v){return s+v.totalGeral;},0);
+  var totalGeral = vendas.reduce(function(s,v){return s+(v.totalGeral||0);},0);
   var numVendas = vendas.length;
   var ticketMedio = totalGeral / numVendas;
 
   // Produtos mais vendidos
   var prodVendas = {};
   vendas.forEach(function(v){
-    v.todosItens.forEach(function(i){
+    (v.todosItens||[]).forEach(function(i){
       var k = (i.fracaoDe && i.original && i.original.nome) ? i.original.nome : i.nome; // frações contam no produto original
       if (!prodVendas[k]) prodVendas[k] = {nome:k,cat:i.cat||'',qty:0,total:0};
       prodVendas[k].qty += i.fracaoDe ? (i.fracaoPeso || 1 / i.fracaoDe) * ((i.original && i.original.qty) || 1) : i.qty;
@@ -1377,12 +1376,12 @@ function gerarRelConteudo(vendas) {
 
   // Por forma de pagamento
   var pgtoVendas = {dinheiro:0,pix:0,debito:0,credito:0};
-  vendas.forEach(function(v){ v.pagamentos.forEach(function(p){ pgtoVendas[p.pgto]=(pgtoVendas[p.pgto]||0)+p.valor; }); });
+  vendas.forEach(function(v){ (v.pagamentos||[]).forEach(function(p){ pgtoVendas[p.pgto]=(pgtoVendas[p.pgto]||0)+p.valor; }); });
   var pgtoNomes = {dinheiro:'💵 Dinheiro',pix:'📱 PIX',debito:'💳 Débito',credito:'💳 Crédito'};
 
   // Por categoria
   var catVendas = {};
-  vendas.forEach(function(v){ v.todosItens.forEach(function(i){ var c=i.cat||'Outros'; catVendas[c]=(catVendas[c]||0)+(i.preco*i.qty); }); });
+  vendas.forEach(function(v){ (v.todosItens||[]).forEach(function(i){ var c=i.cat||'Outros'; catVendas[c]=(catVendas[c]||0)+(i.preco*i.qty); }); });
   var topCats = Object.entries(catVendas).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
   var maxCat = topCats.length ? topCats[0][1] : 1;
 
@@ -1397,7 +1396,7 @@ function gerarRelConteudo(vendas) {
     '<div class="rel-card"><div class="rl">Total de Vendas</div><div class="rv">' + numVendas + '</div></div>' +
     '<div class="rel-card"><div class="rl">Faturamento</div><div class="rv">R$ ' + totalGeral.toFixed(2).replace('.',',') + '</div></div>' +
     '<div class="rel-card"><div class="rl">Ticket Médio</div><div class="rv">R$ ' + ticketMedio.toFixed(2).replace('.',',') + '</div></div>' +
-    '<div class="rel-card"><div class="rl">Itens Vendidos</div><div class="rv">' + vendas.reduce(function(s,v){return s+v.todosItens.reduce(function(ss,i){return ss+i.qty;},0);},0) + '</div></div>' +
+    '<div class="rel-card"><div class="rl">Itens Vendidos</div><div class="rv">' + vendas.reduce(function(s,v){return s+(v.todosItens||[]).reduce(function(ss,i){return ss+i.qty;},0);},0) + '</div></div>' +
     '</div>' +
 
     '<h4 style="color:var(--red);margin-bottom:12px">🏆 Produtos Mais Vendidos</h4>' +
