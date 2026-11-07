@@ -1193,6 +1193,7 @@ function registrarVendaMesa(mesa) {
       fbVenda
     ).then(function(docRef) {
       console.log('[PDV Firebase] Venda salva:', docRef.id);
+      if (window._pdvMarcarSync) window._pdvMarcarSync(venda.data);
     }).catch(function(e) {
       console.warn('[PDV Firebase] Erro ao salvar:', e.message);
     });
@@ -1321,8 +1322,9 @@ function relTodasVendas() {
   var locais = state.vendas || [];
   if (!window._relVendasNuvem) return locais;
   var vistas = {};
-  locais.forEach(function(v){ vistas[v.data] = true; });
-  var extras = window._relVendasNuvem.filter(function(v){ return v.data && !vistas[v.data]; });
+  locais.forEach(function(v){ if (v.data) vistas[v.data] = true; });
+  var extras = [];
+  window._relVendasNuvem.forEach(function(v){ if (v.data && !vistas[v.data]) { vistas[v.data] = true; extras.push(v); } });
   return locais.concat(extras).sort(function(x,y){ return new Date(x.data) - new Date(y.data); });
 }
 
@@ -1341,7 +1343,8 @@ function relCarregarNuvem() {
       var lista = [];
       snap.forEach(function(doc){ lista.push(relNormalizarVendaNuvem(doc.data() || {})); });
       window._relVendasNuvem = lista;
-      window._relNuvemStatus = '☁️ ' + lista.length + ' venda(s) na nuvem + ' + (state.vendas || []).length + ' neste aparelho (sem duplicar).';
+      var unicas = {}; lista.forEach(function(v){ if (v.data) unicas[v.data] = 1; });
+      window._relNuvemStatus = '☁️ ' + relTodasVendas().length + ' venda(s) no total: ' + Object.keys(unicas).length + ' na nuvem, ' + (state.vendas || []).length + ' neste aparelho (repetidas contam 1 vez).';
       filtrarRelPeriodo(window._relPeriodoAtual);
     }).catch(function(e){
       console.warn('[Relatorios] nuvem', e);
@@ -1899,19 +1902,42 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
     return { timestamp: v.timestamp || Date.now(), mesa: v.mesa, estab: v.estab, total: v.totalGeral != null ? v.totalGeral : v.total, itens: itens, pagamentos: v.pagamentos, data: v.data, _migrado: true };
   }
 
+  // Controle local de quais vendas ja estao na nuvem (chave = data/hora ISO da venda)
+  var SYNC_KEY = 'opg_vendas_sync_cj';
+  function lerSync(){ try { return JSON.parse(localStorage.getItem(SYNC_KEY) || '{}') || {}; } catch(e){ return {}; } }
+  function salvarSync(m){ try { localStorage.setItem(SYNC_KEY, JSON.stringify(m)); } catch(e){} }
+  window._pdvMarcarSync = function(data){ if(!data) return; var m = lerSync(); m[data] = 1; salvarSync(m); };
+  function pendentes(vendas){ var m = lerSync(); return vendas.filter(function(v){ return v && v.data && !m[v.data]; }); }
+
   function migrarHistorico(vendas, onProgress, onDone){
     var fb = window._pdvFirestore;
-    var enviados = 0, erros = 0, total = vendas.length;
-    function enviarSeq(i){
-      if (i >= vendas.length){ onDone(enviados, erros, total); return; }
-      var doc = vendaParaFirebase(vendas[i]);
-      fb.addDoc(fb.collection(fb.db, 'pdv_vendas_candeiasjr'), doc).then(function(){
-        enviados++; onProgress(i+1, total); setTimeout(function(){ enviarSeq(i+1); }, 60);
-      }).catch(function(e){
-        erros++; console.warn('[PDV] falha ao enviar venda', e); setTimeout(function(){ enviarSeq(i+1); }, 60);
+    // 1) Confere o que ja existe na nuvem, para NAO duplicar
+    fb.getDocs(fb.collection(fb.db, 'pdv_vendas_candeiasjr')).then(function(snap){
+      var naNuvem = {};
+      snap.forEach(function(d){ var x = (d.data && d.data()) || {}; if (x.data) naNuvem[x.data] = 1; });
+      var m = lerSync(), faltam = [], jaEstavam = 0;
+      vendas.forEach(function(v){
+        if (!v || !v.data) return;
+        if (naNuvem[v.data]) { m[v.data] = 1; jaEstavam++; } else faltam.push(v);
       });
-    }
-    enviarSeq(0);
+      salvarSync(m);
+      // 2) Envia so as que faltam
+      var enviados = 0, erros = 0, total = faltam.length;
+      if (!total) { onProgress(1, 1); onDone(0, 0, 0, jaEstavam); return; }
+      function enviarSeq(i){
+        if (i >= total){ onDone(enviados, erros, total, jaEstavam); return; }
+        var v = faltam[i];
+        fb.addDoc(fb.collection(fb.db, 'pdv_vendas_candeiasjr'), vendaParaFirebase(v)).then(function(){
+          enviados++; window._pdvMarcarSync(v.data); onProgress(i+1, total); setTimeout(function(){ enviarSeq(i+1); }, 60);
+        }).catch(function(e){
+          erros++; console.warn('[PDV] falha ao enviar venda', e); onProgress(i+1, total); setTimeout(function(){ enviarSeq(i+1); }, 60);
+        });
+      }
+      enviarSeq(0);
+    }).catch(function(e){
+      console.warn('[PDV] nao consegui conferir a nuvem', e);
+      onDone(0, 0, 0, 0, e || true);
+    });
   }
 
   function lerVendasLocais(){
@@ -1950,12 +1976,18 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
         if(!ok){ alert('Sem conexão com a nuvem agora. Verifique a internet e tente novamente.'); btn.disabled=false; btn.style.opacity=1; btn.textContent='⬇️  Atualizar agora'; return; }
         migrarHistorico(vendas,
           function(feito,total){ var pct=Math.round(feito/total*100); document.getElementById('mig-bar').style.width=pct+'%'; document.getElementById('mig-pct').textContent=pct+'%'; },
-          function(enviados,erros,total){
+          function(enviados,erros,total,jaEstavam,erroLeitura){
+            if (erroLeitura) {
+              alert('Não consegui conferir as vendas na nuvem. Verifique a internet e se as Regras do Firebase foram publicadas, e tente de novo.');
+              btn.disabled=false; btn.style.opacity=1; btn.textContent='⬇️  Atualizar agora'; depois.style.display='';
+              document.getElementById('mig-progresso').style.display='none';
+              return;
+            }
             localStorage.setItem(FLAG, '1');
             btn.textContent = '✅ Concluído';
             setTimeout(function(){
               if(ov) ov.remove();
-              alert('Sistema atualizado! ' + enviados + ' de ' + total + ' vendas sincronizadas.' + (erros ? (' (' + erros + ' falharam, abra novamente para tentar o restante)') : ''));
+              alert('Sistema atualizado! ' + enviados + ' venda(s) enviada(s) para a nuvem' + (jaEstavam ? (', ' + jaEstavam + ' já estavam lá') : '') + '.' + (erros ? (' (' + erros + ' falharam, abra novamente para tentar o restante)') : ''));
             }, 600);
           }
         );
@@ -1973,7 +2005,7 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
 
   function verificar(){
     if (sessionStorage.getItem(SESSION_KEY) === '1') return;
-    var vendas = lerVendasLocais();
+    var vendas = pendentes(lerVendasLocais());
     if (!vendas.length){ return; }
     aguardarFirebase(function(ok){ if(!ok) return; mostrarModal(vendas, false); });
   }
