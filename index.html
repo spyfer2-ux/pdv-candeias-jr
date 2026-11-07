@@ -236,6 +236,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
 /* ===== Logo grande no espaco vazio a direita (so na tela inicial) ===== */
 .mesas-body{position:relative}
 .mesas-logo-lado{position:absolute;top:40px;right:30px;width:min(260px,calc(50vw - 400px));height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);pointer-events:none}
+.mesas-logo-lado.esquerda{right:auto;left:30px}
 @media (max-width:1100px){.mesas-logo-lado{display:none}}
 /* ===== CONSUMO PROPRIO (card na tela inicial + modo do PDV) ===== */
 .mesa-card.consumo{border-color:#16a085!important;background:rgba(22,160,133,.08)!important}
@@ -326,6 +327,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
     <div class="mesas-titulo">Selecione uma mesa para iniciar o atendimento</div>
     <div class="mesas-grid" id="mesas-grid"></div>
     <img class="mesas-logo-lado" src="https://spyfer2-ux.github.io/pdv-pastelaria/logo.png" alt="Candeias Jr">
+    <img class="mesas-logo-lado esquerda" src="https://spyfer2-ux.github.io/pdv-pastelaria/logo.png" alt="Candeias Jr">
   </div>
 </div>
 
@@ -413,7 +415,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
       <button class="tab" data-tab="hist" onclick="showAdminTab('hist')">📋 Histórico</button>
       <button class="tab" data-tab="prods" onclick="showAdminTab('prods')">🛒 Produtos</button>
       <button class="tab" data-tab="consumo" onclick="showAdminTab('consumo')">🍽️ Consumo Próprio</button>
-      <button class="tab" data-tab="freezer" onclick="showAdminTab('freezer')">🧊 Freezer</button>
+      <button class="tab" data-tab="freezer" onclick="showAdminTab('freezer')">🧊 Freezer / Geladeira</button>
       <button class="tab" data-tab="mauro" onclick="showAdminTab('mauro')">🏠 Contas do Mauro</button>
       <button class="tab" onclick="abrirCobrancas()">💳 Cobranças em Aberto</button>
       <button class="tab" onclick="atualizarSistemaPDV()">🔄 Atualizar Sistema</button>
@@ -430,7 +432,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
 <!-- TELA FREEZER (estoque virtual de pasteis) -->
 <div id="tela-freezer" class="tela bloco">
   <div class="hdr no-print">
-    <div class="hdr-logo" style="color:#fff;font-weight:800;font-size:1.05em">🧊 FREEZER · estoque de pastéis</div>
+    <div class="hdr-logo" style="color:#fff;font-weight:800;font-size:1.05em">🧊 FREEZER · 🥶 GELADEIRA</div>
     <div class="hdr-btns"><button class="btn btn-gray btn-sm" onclick="irMesas()">🏠 Voltar</button></div>
   </div>
   <div id="fz-corpo" style="padding:16px 16px 120px;max-width:900px;margin:0 auto"></div>
@@ -2359,7 +2361,7 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
 <!-- AVISO DE ATUALIZACAO: correcao nome duplicado na comanda/impressao -->
 <script>
 (function(){
-  var VERSAO = 'consumo-freezer-2026-11';
+  var VERSAO = 'consumo-freezer-geladeira-2026-11';
   var CHAVE = 'pdv_aviso_visto';
   function mostrarAviso(){
     try {
@@ -2377,7 +2379,7 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
           '<div style="margin-bottom:7px">🍳 <b>Comanda:</b> agora vai pra cozinha <b>só o que é novo</b> na mesa (pedido adicional).</div>' +
           '<div style="margin-bottom:7px">➕ <b>Adicionais:</b> tocar no pastel já coloca no pedido. Se o cliente quiser adicional, marque a caixa <b>Adicionais</b> no item.</div>' +
           '<div style="margin-bottom:7px">🍽️ <b>Consumo Próprio:</b> card novo na tela inicial. Funciona igual mesa, mas não entra no faturamento.</div>' +
-          '<div>🧊 <b>FREEZER:</b> botão no topo da tela inicial para lançar os pastéis que entram no freezer. As vendas dão baixa sozinhas.</div>' +
+          '<div>🧊 <b>FREEZER:</b> botão no topo da tela inicial. Lance os <b>pacotes de 10</b> que entram no freezer e os que passam para a <b>geladeira</b>. As vendas descontam da geladeira sozinhas.</div>' +
         '</div>';
       var btn = document.createElement('button');
       btn.textContent = 'Entendi';
@@ -2741,6 +2743,20 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
 .fz-rodape.baixa{border-top-color:#c0392b}
 .fz-rodape .resumo{font-weight:700;color:#333;font-size:.9em}
 .fz-rodape select{padding:8px;border-radius:8px;border:2px solid rgba(192,57,43,.3);font-size:.88em;color:#222;background:#fff}
+.fz-card.gel{border-color:rgba(142,68,173,.3)}
+.fz-card.gel .v{color:#8e44ad}
+.fz-card.alerta{border-color:rgba(230,126,34,.4)}
+.fz-card.alerta .v{color:#e67e22}
+.fz-modo.transf{color:#8e44ad;border-color:rgba(142,68,173,.35)}
+.fz-modo.transf.on{background:#8e44ad;color:#fff;border-color:#8e44ad}
+.fz-info.transf{background:#f5eefa;border-color:#dcc6ea}
+.fz-saldo.gel{color:#8e44ad}
+.fz-saldo.gel.zero{color:#bbb}
+.fz-saldo.gel.neg{color:#c0392b}
+.fz-alerta{display:inline-block;background:#fff3e0;color:#e67e22;border:1px solid #f5c26b;border-radius:10px;padding:0 6px;font-size:.78em;font-weight:800;margin-left:4px;white-space:nowrap}
+.fz-chk{font-size:.8em;color:#555;display:inline-flex;align-items:center;gap:5px;margin-left:6px;cursor:pointer}
+.fz-rodape.transf{border-top-color:#8e44ad}
+.btn-roxo{background:linear-gradient(135deg,#8e44ad,#9b59b6);color:#fff}
 .fz-hist{margin-top:18px}
 .fz-hist .it{background:#fff;border:1px solid #eee;border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:.8em;color:#444}
 </style>
@@ -3166,15 +3182,31 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
     baixarCSV('contas-mauro-' + cmMesAtual + '.csv', L);
   };
 
-  /* ================= FREEZER: estoque virtual dos pasteis ================= */
+  /* ================= FREEZER (pacotes de 10) -> GELADEIRA (pasteis) ================= */
+  // Fluxo: o pastel entra no FREEZER em pacotes de 10; quando o pacote sai do freezer vai pra GELADEIRA;
+  // as vendas do caixa, o Consumo Proprio e as baixas (iFood/perda) saem da GELADEIRA.
+  // Todas as quantidades ficam guardadas em PASTEIS (1 pacote = PACOTE pasteis).
   var CATS_PASTEL = ['Brócolis','Bauru','Carne','Carne Louca','Carne Seca','Escarola','Calabresa','Frango','Mussarela','Palmito','Pizza','Salame','Vegano','Hot Dog','Os Gigantes','Doces','Atum','Berinjela'];
-  var CH_FZ_MOV = 'opg_freezer_mov_cj';     // entradas, baixas manuais e ajustes de contagem
-  var CH_FZ_SAI = 'opg_freezer_saidas_cj';  // saidas automaticas por dia: { 'AAAA-MM-DD': { v: {idProduto: qtd}, c: {idProduto: qtd} } }
+  var PACOTE = 10;           // pasteis por pacote no freezer
+  var ALERTA_GELADEIRA = 3;  // geladeira com ate 3 pasteis e pacote no freezer = hora de pegar pacote
+  var CH_FZ_MOV = 'opg_freezer_mov_cj';     // entradas no freezer, passagens p/ geladeira, baixas e ajustes
+  var CH_FZ_SAI = 'opg_freezer_saidas_cj';  // vendas e consumo por dia (saem da geladeira): { 'AAAA-MM-DD': { v: {id: qtd}, c: {id: qtd} } }
   var MOTIVOS_BAIXA = ['iFood', 'Perda (estragou / caiu)', 'Outro'];
   function sabores(){ return (state.produtos || []).filter(function(p){ return CATS_PASTEL.indexOf(p.cat) >= 0; }); }
   function nomeSabor(id){ var p = getProdById(Number(id)); return p ? p.nome : ('Sabor #' + id); }
   function ehPastel(i){ if (!i || i.id == null) return false; var cat = i.cat || ((getProdById(i.id) || {}).cat); return CATS_PASTEL.indexOf(cat) >= 0; }
-  // baixa automatica: 'v' = venda finalizada no caixa, 'c' = consumo proprio
+  function pc(un){ return fmtQ(r4((Number(un) || 0) / PACOTE)); }   // pasteis -> pacotes (texto)
+  function sinal(v){ return v > 0 ? '+' : ''; }
+  function lin(a, b){ return '<div class="rc-lin"><span>' + a + '</span><span>' + b + '</span></div>'; }
+  function localMov(m){ return m.local || (m.tipo === 'baixa' ? 'geladeira' : 'freezer'); } // lancamentos feitos antes da geladeira
+  function efeito(m, q){ // quanto cada lancamento mexe no freezer (f) e na geladeira (g), em pasteis
+    if (m.tipo === 'entrada') return { f: q, g: 0 };
+    if (m.tipo === 'transf') return { f: -q, g: q };
+    if (m.tipo === 'baixa') return localMov(m) === 'freezer' ? { f: -q, g: 0 } : { f: 0, g: -q };
+    if (m.tipo === 'ajuste') return localMov(m) === 'geladeira' ? { f: 0, g: q } : { f: q, g: 0 };
+    return { f: 0, g: 0 };
+  }
+  // baixa automatica (sai da geladeira): 'v' = venda finalizada no caixa, 'c' = consumo proprio
   window.freezerBaixaAuto = function(tipo, itens){
     try {
       var mapa = {}, tem = false;
@@ -3192,69 +3224,85 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
     if (v && v.todosItens) freezerBaixaAuto('v', v.todosItens);
     return v;
   };
-  function fzSaldos(ate){ // ate = Date (exclusivo); null = ate agora
-    var s = {};
-    function add(id, q){ s[id] = r4((s[id] || 0) + q); }
+  function fzSaldos(ate){ // ate = Date (exclusivo); null = ate agora. Devolve { f: {id: pasteis no freezer}, g: {id: pasteis na geladeira} }
+    var f = {}, g = {};
+    function add(o, id, q){ if (q) o[id] = r4((o[id] || 0) + q); }
     lerLS(CH_FZ_MOV, []).forEach(function(m){
       if (ate && new Date(m.data) >= ate) return;
-      var sinal = m.tipo === 'baixa' ? -1 : 1; // entrada (+), baixa (-), ajuste (diferenca com sinal)
-      Object.keys(m.itens || {}).forEach(function(id){ add(id, sinal * (Number(m.itens[id]) || 0)); });
+      Object.keys(m.itens || {}).forEach(function(id){ var e = efeito(m, Number(m.itens[id]) || 0); add(f, id, e.f); add(g, id, e.g); });
     });
     var sai = lerLS(CH_FZ_SAI, {});
     Object.keys(sai).forEach(function(dia){
       if (ate && diaData(dia) >= ate) return;
-      ['v', 'c'].forEach(function(t){ var o = (sai[dia] || {})[t] || {}; Object.keys(o).forEach(function(id){ add(id, -(Number(o[id]) || 0)); }); });
+      ['v', 'c'].forEach(function(t){ var o = (sai[dia] || {})[t] || {}; Object.keys(o).forEach(function(id){ add(g, id, -(Number(o[id]) || 0)); }); });
     });
-    return s;
+    return { f: f, g: g };
+  }
+  function pegarPacote(s, id){ return (s.f[id] || 0) >= PACOTE && (s.g[id] || 0) <= ALERTA_GELADEIRA; }
+  function clsSaldo(v){ return v < 0 ? ' neg' : (v === 0 ? ' zero' : ''); }
+  function descMov(m){ // texto de um lancamento manual
+    var ids = Object.keys(m.itens || {}), tot = ids.reduce(function(s, id){ return s + (Number(m.itens[id]) || 0); }, 0), loc = localMov(m);
+    var emPct = m.tipo === 'entrada' || m.tipo === 'transf' || (m.tipo === 'ajuste' && loc === 'freezer');
+    var aj = m.tipo === 'ajuste';
+    var tipo = m.tipo === 'entrada' ? '➕ Entrada no freezer' : m.tipo === 'transf' ? '➡️ Freezer → Geladeira'
+      : m.tipo === 'baixa' ? '➖ Baixa da ' + loc + ' (' + (m.motivo || '') + ')' : '📋 Ajuste de contagem (' + loc + ')';
+    var qtd = emPct ? (aj ? sinal(tot) : '') + pc(tot) + ' pct = ' + (aj ? sinal(tot) : '') + fmtQ(tot) + ' pastéis' : (aj ? sinal(tot) : '') + fmtQ(tot) + ' pastel(éis)';
+    var lista = ids.map(function(id){ var v = Number(m.itens[id]) || 0; return (aj ? sinal(v) : '') + (emPct ? pc(v) + ' pct ' : fmtQ(v) + 'x ') + ((m.nomes && m.nomes[id]) || nomeSabor(id)); }).join(', ');
+    return { tipo: tipo, qtd: qtd, lista: lista };
   }
 
   /* ----- tela FREEZER (botao na tela inicial) ----- */
-  var fz = { modo: 'entrada', qtd: {}, busca: '', cat: 'Todos', soEstoque: false, motivo: MOTIVOS_BAIXA[0] };
+  var FZ_MODOS = {
+    entrada: { bt: '➕ Entrada no freezer', un: 'pct', ok: '✅ Confirmar entrada', btn: 'btn-blue',
+      info: 'Lance quantos <b>pacotes de ' + PACOTE + '</b> de cada sabor <b>entraram no freezer</b>. Ex.: 3 = 3 pacotes = ' + (3 * PACOTE) + ' pastéis.' },
+    transf: { bt: '➡️ Freezer → Geladeira', un: 'pct', ok: '✅ Passar para a geladeira', btn: 'btn-roxo',
+      info: 'Tirou pacote do freezer e colocou na <b>geladeira</b>? Lance aqui quantos <b>pacotes</b> de cada sabor. As vendas do caixa e o Consumo Próprio descontam da geladeira sozinhos.' },
+    baixa: { bt: '➖ Baixa da geladeira', un: 'un', ok: '✅ Confirmar baixa', btn: 'btn-red',
+      info: 'Pastel que saiu da geladeira <b>sem passar pelo caixa</b>: pedido do iFood, estragou, caiu. Quantidade em <b>pastéis</b> (unidades).' }
+  };
+  var fz = { modo: 'entrada', qtd: {}, busca: '', cat: 'Todos', soEstoque: false, soPegar: false, motivo: MOTIVOS_BAIXA[0] };
   window.freezerTemPendente = function(){ return Object.keys(fz.qtd).length > 0; };
   window.abrirFreezer = function(){
-    fz.qtd = {}; fz.busca = ''; fz.cat = 'Todos'; fz.modo = 'entrada'; fz.soEstoque = false;
+    fz.qtd = {}; fz.busca = ''; fz.cat = 'Todos'; fz.modo = 'entrada'; fz.soEstoque = false; fz.soPegar = false;
     mostrarTela('tela-freezer');
     renderFreezer();
     window.scrollTo(0, 0);
   };
   function renderFreezer(){
     var el = document.getElementById('fz-corpo'); if (!el) return;
-    var saldos = fzSaldos(null), lista = sabores(), totNo = 0, comEst = 0, zerados = 0;
-    lista.forEach(function(p){ var s = saldos[p.id] || 0; if (s > 0) { totNo += s; comEst++; } else zerados++; });
-    var baixa = fz.modo === 'baixa';
+    var s = fzSaldos(null), lista = sabores(), totF = 0, totG = 0, pegar = 0;
+    lista.forEach(function(p){ var f = s.f[p.id] || 0, g = s.g[p.id] || 0; if (f > 0) totF += f; if (g > 0) totG += g; if (pegarPacote(s, p.id)) pegar++; });
+    var M = FZ_MODOS[fz.modo];
     var cats = ['Todos'].concat(CATS_PASTEL.filter(function(c){ return lista.some(function(p){ return p.cat === c; }); }));
     el.innerHTML =
       '<div class="fz-cards">' +
-        '<div class="fz-card"><div class="l">Pastéis no freezer agora</div><div class="v">' + fmtQ(totNo) + '</div></div>' +
-        '<div class="fz-card"><div class="l">Sabores com estoque</div><div class="v">' + comEst + '</div></div>' +
-        '<div class="fz-card"><div class="l">Sabores zerados</div><div class="v" style="color:#c0392b">' + zerados + '</div></div>' +
+        '<div class="fz-card"><div class="l">🧊 No freezer</div><div class="v">' + pc(totF) + '</div><div class="l">pacotes (' + fmtQ(totF) + ' pastéis)</div></div>' +
+        '<div class="fz-card gel"><div class="l">🥶 Na geladeira</div><div class="v">' + fmtQ(totG) + '</div><div class="l">pastéis</div></div>' +
+        '<div class="fz-card alerta" style="cursor:pointer" onclick="fzTogglePegar()" title="Mostrar só esses sabores"><div class="l">⚠️ Pegar pacote do freezer</div><div class="v">' + pegar + '</div><div class="l">sabor(es) acabando na geladeira</div></div>' +
       '</div>' +
-      '<div class="fz-modos">' +
-        '<button class="fz-modo' + (!baixa ? ' on' : '') + '" onclick="fzModo(\'entrada\')">➕ Entrada no freezer</button>' +
-        '<button class="fz-modo baixa' + (baixa ? ' on' : '') + '" onclick="fzModo(\'baixa\')">➖ Baixa manual (iFood / perda)</button>' +
-      '</div>' +
-      '<div class="fz-info' + (baixa ? ' baixa' : '') + '">' + (baixa
-        ? 'Use para o que saiu do freezer <b>sem passar pelo caixa</b>: pedidos do iFood, pastel que estragou ou caiu. As vendas do caixa e o Consumo Próprio já dão baixa sozinhos.'
-        : 'Digite quantos pastéis de cada sabor <b>entraram</b> no freezer e toque em <b>Confirmar entrada</b>. Quando vender (ou lançar Consumo Próprio), o estoque baixa sozinho.') + '</div>' +
+      '<div class="fz-modos">' + Object.keys(FZ_MODOS).map(function(k){ return '<button class="fz-modo ' + k + (k === fz.modo ? ' on' : '') + '" onclick="fzModo(\'' + k + '\')">' + FZ_MODOS[k].bt + '</button>'; }).join('') + '</div>' +
+      '<div class="fz-info ' + fz.modo + '">' + M.info + '</div>' +
       '<input class="fz-busca" id="fz-busca" type="text" placeholder="🔍 Buscar sabor ou número..." value="' + esc(fz.busca) + '" oninput="fzBuscar(this.value)">' +
       '<div class="fz-filtros">' + cats.map(function(c){ return '<button class="ftag' + (c === fz.cat ? ' on' : '') + '" onclick="fzCat(\'' + c + '\')">' + esc(c) + '</button>'; }).join('') +
-        '<label style="font-size:.8em;color:#555;display:inline-flex;align-items:center;gap:5px;margin-left:6px;cursor:pointer"><input type="checkbox"' + (fz.soEstoque ? ' checked' : '') + ' onchange="fzSoEstoque(this.checked)"> Só sabores com estoque</label>' +
+        '<label class="fz-chk"><input type="checkbox" id="fz-so-estoque"' + (fz.soEstoque ? ' checked' : '') + ' onchange="fzSoEstoque(this.checked)"> Só sabores com estoque</label>' +
+        '<label class="fz-chk"><input type="checkbox" id="fz-so-pegar"' + (fz.soPegar ? ' checked' : '') + ' onchange="fzSoPegar(this.checked)"> ⚠️ Só os de pegar pacote</label>' +
       '</div>' +
       '<div id="fz-lista"></div>' +
       '<div class="fz-hist" id="fz-hist"></div>' +
       '<div class="fz-rodape" id="fz-rodape"></div>';
-    renderFzLista(saldos);
+    renderFzLista(s);
     renderFzRodape();
     renderFzHist();
   }
-  function renderFzLista(saldos){
-    saldos = saldos || fzSaldos(null);
+  function renderFzLista(s){
+    s = s || fzSaldos(null);
     var el = document.getElementById('fz-lista'); if (!el) return;
-    var b = (fz.busca || '').toLowerCase().trim();
+    var b = (fz.busca || '').toLowerCase().trim(), un = FZ_MODOS[fz.modo].un;
     var lista = sabores().filter(function(p){
       if (fz.cat !== 'Todos' && p.cat !== fz.cat) return false;
       if (b && (p.nome + ' ' + p.cat + ' ' + p.id).toLowerCase().indexOf(b) < 0) return false;
-      if (fz.soEstoque && !((saldos[p.id] || 0) > 0)) return false;
+      if (fz.soEstoque && !((s.f[p.id] || 0) > 0 || (s.g[p.id] || 0) > 0)) return false;
+      if (fz.soPegar && !pegarPacote(s, p.id)) return false;
       return true;
     });
     if (!lista.length) { el.innerHTML = '<div class="empty"><div class="ei">🧊</div><p>Nenhum sabor encontrado.</p></div>'; return; }
@@ -3262,12 +3310,13 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
     CATS_PASTEL.forEach(function(cat){
       var itens = lista.filter(function(p){ return p.cat === cat; }); if (!itens.length) return;
       html += '<div class="fz-cat"><h4>' + esc(cat) + '</h4>' + itens.map(function(p){
-        var s = saldos[p.id] || 0, q = fz.qtd[p.id] || '';
+        var f = s.f[p.id] || 0, g = s.g[p.id] || 0, q = fz.qtd[p.id] || '';
         return '<div class="fz-row' + (q ? ' tem' : '') + '" id="fzr-' + p.id + '">' +
-          '<div class="fz-nome">' + (p.id < 1000 ? '<span class="fz-num">' + p.id + '</span>' : '') + esc(p.nome) + '</div>' +
-          '<div class="fz-saldo' + (s < 0 ? ' neg' : (s === 0 ? ' zero' : '')) + '">' + fmtQ(s) + '<small>no freezer</small></div>' +
+          '<div class="fz-nome">' + (p.id < 1000 ? '<span class="fz-num">' + p.id + '</span>' : '') + esc(p.nome) + (pegarPacote(s, p.id) ? ' <span class="fz-alerta">⚠️ pegar pacote</span>' : '') + '</div>' +
+          '<div class="fz-saldo fz-f' + clsSaldo(f) + '" title="Pacotes no freezer">' + pc(f) + '<small>pct freezer</small></div>' +
+          '<div class="fz-saldo gel fz-g' + clsSaldo(g) + '" title="Pastéis na geladeira">' + fmtQ(g) + '<small>un geladeira</small></div>' +
           '<div class="fz-ctrl"><button class="m" onclick="fzSomar(' + p.id + ',-1)">−</button>' +
-          '<input type="number" min="0" step="1" inputmode="numeric" id="fzq-' + p.id + '" value="' + q + '" placeholder="0" oninput="fzDigitar(' + p.id + ',this.value)">' +
+          '<input type="number" min="0" step="1" inputmode="numeric" id="fzq-' + p.id + '" value="' + q + '" placeholder="' + un + '" oninput="fzDigitar(' + p.id + ',this.value)">' +
           '<button onclick="fzSomar(' + p.id + ',1)">+</button></div>' +
         '</div>';
       }).join('') + '</div>';
@@ -3276,22 +3325,23 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
   }
   function renderFzRodape(){
     var el = document.getElementById('fz-rodape'); if (!el) return;
-    var ids = Object.keys(fz.qtd), tot = ids.reduce(function(s, id){ return s + fz.qtd[id]; }, 0), baixa = fz.modo === 'baixa';
-    el.className = 'fz-rodape' + (baixa ? ' baixa' : '');
-    el.innerHTML = '<span class="resumo">' + (tot ? (baixa ? '➖ Baixa: ' : '➕ Entrada: ') + tot + ' pastel(éis) em ' + ids.length + ' sabor(es)' : (baixa ? 'Digite quantos saíram de cada sabor' : 'Digite quantos entraram de cada sabor')) + '</span>' +
-      (baixa ? '<select id="fz-motivo" onchange="fzMotivo(this.value)">' + MOTIVOS_BAIXA.map(function(m){ return '<option' + (m === fz.motivo ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select>' : '') +
+    var M = FZ_MODOS[fz.modo], ids = Object.keys(fz.qtd), tot = ids.reduce(function(s, id){ return s + fz.qtd[id]; }, 0), txt;
+    if (!tot) txt = fz.modo === 'baixa' ? 'Digite quantos pastéis saíram de cada sabor' : (fz.modo === 'transf' ? 'Digite quantos pacotes foram para a geladeira' : 'Digite quantos pacotes entraram no freezer');
+    else if (fz.modo === 'baixa') txt = '➖ Baixa: ' + tot + ' pastel(éis) em ' + ids.length + ' sabor(es)';
+    else txt = (fz.modo === 'transf' ? '➡️ Para a geladeira: ' : '➕ Entrada no freezer: ') + tot + ' pacote(s) = ' + (tot * PACOTE) + ' pastéis em ' + ids.length + ' sabor(es)';
+    el.className = 'fz-rodape ' + fz.modo;
+    el.innerHTML = '<span class="resumo">' + txt + '</span>' +
+      (fz.modo === 'baixa' ? '<select id="fz-motivo" onchange="fzMotivo(this.value)">' + MOTIVOS_BAIXA.map(function(m){ return '<option' + (m === fz.motivo ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select>' : '') +
       (tot ? '<button class="btn btn-gray btn-sm" onclick="fzLimpar()">Limpar</button>' : '') +
-      '<button class="btn ' + (baixa ? 'btn-red' : 'btn-blue') + '"' + (tot ? '' : ' disabled style="opacity:.5;cursor:default"') + ' onclick="fzConfirmar()">✅ Confirmar ' + (baixa ? 'baixa' : 'entrada') + '</button>';
+      '<button class="btn ' + M.btn + '"' + (tot ? '' : ' disabled style="opacity:.5;cursor:default"') + ' onclick="fzConfirmar()">' + M.ok + '</button>';
   }
   function renderFzHist(){
     var el = document.getElementById('fz-hist'); if (!el) return;
     var movs = lerLS(CH_FZ_MOV, []).slice(-8).reverse();
     if (!movs.length) { el.innerHTML = ''; return; }
     el.innerHTML = '<h4 style="color:#2980b9;margin-bottom:8px">📜 Últimos lançamentos</h4>' + movs.map(function(m){
-      var ids = Object.keys(m.itens || {}), tot = ids.reduce(function(s, id){ return s + (Number(m.itens[id]) || 0); }, 0), aj = m.tipo === 'ajuste';
-      var tipo = m.tipo === 'entrada' ? '➕ Entrada' : (m.tipo === 'baixa' ? '➖ Baixa · ' + esc(m.motivo || '') : '📋 Ajuste de contagem');
-      return '<div class="it"><b>' + dataHora(m.data) + '</b> · ' + tipo + ' · ' + (aj && tot > 0 ? '+' : '') + fmtQ(tot) + ' pastel(éis)' +
-        '<div style="color:#777;margin-top:2px">' + ids.map(function(id){ return (aj && m.itens[id] > 0 ? '+' : '') + fmtQ(m.itens[id]) + 'x ' + esc((m.nomes && m.nomes[id]) || nomeSabor(id)); }).join(', ') + '</div></div>';
+      var d = descMov(m);
+      return '<div class="it"><b>' + dataHora(m.data) + '</b> · ' + esc(d.tipo) + ' · ' + esc(d.qtd) + '<div style="color:#777;margin-top:2px">' + esc(d.lista) + '</div></div>';
     }).join('');
   }
   window.fzDigitar = function(id, v){
@@ -3310,38 +3360,61 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
   window.fzBuscar = function(v){ fz.busca = v; renderFzLista(); };
   window.fzCat = function(c){ fz.cat = c; renderFreezer(); };
   window.fzSoEstoque = function(on){ fz.soEstoque = !!on; renderFzLista(); };
+  window.fzSoPegar = function(on){ fz.soPegar = !!on; var c = document.getElementById('fz-so-pegar'); if (c) c.checked = fz.soPegar; renderFzLista(); };
+  window.fzTogglePegar = function(){ fzSoPegar(!fz.soPegar); };
   window.fzMotivo = function(m){ fz.motivo = m; };
   window.fzLimpar = function(){ fz.qtd = {}; renderFzLista(); renderFzRodape(); };
   window.fzModo = function(m){
-    if (m === fz.modo) return;
+    if (m === fz.modo || !FZ_MODOS[m]) return;
     if (Object.keys(fz.qtd).length && !confirm('Trocar de modo apaga as quantidades digitadas. Continuar?')) return;
     fz.modo = m; fz.qtd = {}; renderFreezer();
   };
   window.fzConfirmar = function(){
     var ids = Object.keys(fz.qtd).filter(function(id){ return fz.qtd[id] > 0; });
     if (!ids.length) { alert('Digite a quantidade em pelo menos um sabor.'); return; }
-    var baixa = fz.modo === 'baixa', tot = 0, itens = {}, nomes = {};
-    ids.forEach(function(id){ itens[id] = fz.qtd[id]; tot += fz.qtd[id]; nomes[id] = nomeSabor(id); });
-    var motivo = baixa ? (fz.motivo || MOTIVOS_BAIXA[0]) : 'Entrada no freezer';
-    var linhas = ids.map(function(id){ return itens[id] + 'x ' + nomes[id]; });
-    if (!confirm((baixa ? 'Dar BAIXA de ' : 'Lançar ENTRADA de ') + tot + ' pastel(éis) no freezer:\n\n' + linhas.slice(0, 20).join('\n') + (linhas.length > 20 ? '\n... e mais ' + (linhas.length - 20) : '') + (baixa ? '\n\nMotivo: ' + motivo : '') + '\n\nConfirmar?')) return;
+    var modo = fz.modo, emPct = FZ_MODOS[modo].un === 'pct', s = fzSaldos(null);
+    var itens = {}, nomes = {}, totDig = 0, linhas = [], faltando = [];
+    ids.forEach(function(id){
+      var dig = fz.qtd[id]; totDig += dig;
+      itens[id] = emPct ? dig * PACOTE : dig;
+      nomes[id] = nomeSabor(id);
+      linhas.push(dig + (emPct ? ' pct  ' : 'x  ') + nomes[id]);
+      if (modo === 'transf' && (s.f[id] || 0) < itens[id]) faltando.push(nomes[id] + ' (tem ' + pc(s.f[id] || 0) + ' pct)');
+      if (modo === 'baixa' && (s.g[id] || 0) < itens[id]) faltando.push(nomes[id] + ' (tem ' + fmtQ(s.g[id] || 0) + ')');
+    });
+    var motivo = modo === 'baixa' ? (fz.motivo || MOTIVOS_BAIXA[0]) : (modo === 'transf' ? 'Freezer → Geladeira' : 'Entrada no freezer');
+    var titulo = modo === 'entrada' ? 'Lançar ENTRADA no freezer: ' + totDig + ' pacote(s) = ' + (totDig * PACOTE) + ' pastéis'
+      : modo === 'transf' ? 'Passar ' + totDig + ' pacote(s) = ' + (totDig * PACOTE) + ' pastéis do FREEZER para a GELADEIRA'
+      : 'Dar BAIXA de ' + totDig + ' pastel(éis) da geladeira (' + motivo + ')';
+    if (!confirm(titulo + ':\n\n' + linhas.slice(0, 20).join('\n') + (linhas.length > 20 ? '\n... e mais ' + (linhas.length - 20) : '') +
+      (faltando.length ? '\n\n⚠️ Pelo sistema não tem tudo isso ' + (modo === 'transf' ? 'no freezer' : 'na geladeira') + ': ' + faltando.slice(0, 8).join(', ') + (faltando.length > 8 ? '...' : '') + '. Vai ficar negativo até a próxima contagem.' : '') +
+      '\n\nConfirmar?')) return;
     var movs = lerLS(CH_FZ_MOV, []);
-    movs.push({ id: novoId('fz'), data: new Date().toISOString(), tipo: baixa ? 'baixa' : 'entrada', motivo: motivo, itens: itens, nomes: nomes });
+    movs.push({ id: novoId('fz'), data: new Date().toISOString(), tipo: modo, local: modo === 'baixa' ? 'geladeira' : 'freezer', motivo: motivo, itens: itens, nomes: nomes });
     if (!gravarLS(CH_FZ_MOV, movs)) return;
     fz.qtd = {};
     renderFreezer();
-    aviso((baixa ? '➖ Baixa de ' : '✅ Entrada de ') + tot + ' pastel(éis) registrada', baixa ? '#c0392b' : '#2980b9');
+    aviso(modo === 'entrada' ? '✅ ' + totDig + ' pacote(s) entraram no freezer' : modo === 'transf' ? '➡️ ' + totDig + ' pacote(s) foram para a geladeira' : '➖ Baixa de ' + totDig + ' pastel(éis) registrada',
+      modo === 'baixa' ? '#c0392b' : (modo === 'transf' ? '#8e44ad' : '#2980b9'));
   };
 
-  /* ----- relatorio + contagem do FREEZER (Gerencial) ----- */
-  var frMesAtual = null, frContagem = null, frSaldosCont = {};
+  /* ----- relatorio + contagem do FREEZER e da GELADEIRA (Gerencial) ----- */
+  var frMesAtual = null, frContagem = null, frSaldosCont = null;
   function relFreezer(k){
     var ini = inicioMes(k), fim = inicioMes(somaMes(k, 1)), s0 = fzSaldos(ini), mov = {}, nomesMov = {};
-    function m(id){ return mov[id] || (mov[id] = { ent: 0, ven: 0, con: 0, bai: 0, aju: 0 }); }
+    function vazio(){ return { ent: 0, tra: 0, baf: 0, ajf: 0, ven: 0, con: 0, bai: 0, ajg: 0 }; }
+    function m(id){ return mov[id] || (mov[id] = vazio()); }
     lerLS(CH_FZ_MOV, []).forEach(function(x){
       Object.keys(x.nomes || {}).forEach(function(id){ nomesMov[id] = x.nomes[id]; });
       var d = new Date(x.data); if (!(d >= ini && d < fim)) return;
-      Object.keys(x.itens || {}).forEach(function(id){ var q = Number(x.itens[id]) || 0; if (x.tipo === 'entrada') m(id).ent += q; else if (x.tipo === 'baixa') m(id).bai += q; else m(id).aju += q; });
+      var loc = localMov(x);
+      Object.keys(x.itens || {}).forEach(function(id){
+        var q = Number(x.itens[id]) || 0, o = m(id);
+        if (x.tipo === 'entrada') o.ent += q;
+        else if (x.tipo === 'transf') o.tra += q;
+        else if (x.tipo === 'baixa') { if (loc === 'freezer') o.baf += q; else o.bai += q; }
+        else if (x.tipo === 'ajuste') { if (loc === 'geladeira') o.ajg += q; else o.ajf += q; }
+      });
     });
     var sai = lerLS(CH_FZ_SAI, {});
     Object.keys(sai).forEach(function(dia){
@@ -3351,15 +3424,18 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
       Object.keys(o.c || {}).forEach(function(id){ m(id).con += Number(o.c[id]) || 0; });
     });
     var ids = sabores().map(function(p){ return String(p.id); });
-    Object.keys(mov).concat(Object.keys(s0)).forEach(function(id){ if (ids.indexOf(String(id)) < 0) ids.push(String(id)); }); // inclui sabor que saiu do cardapio mas teve movimento
-    var linhas = [], tot = { ini: 0, ent: 0, ven: 0, con: 0, bai: 0, aju: 0, fim: 0 };
+    Object.keys(mov).concat(Object.keys(s0.f), Object.keys(s0.g)).forEach(function(id){ if (ids.indexOf(String(id)) < 0) ids.push(String(id)); }); // inclui sabor que saiu do cardapio
+    var CAMPOS = ['fi', 'ent', 'tra', 'baf', 'ajf', 'ff', 'gi', 'ven', 'con', 'bai', 'ajg', 'gf'], linhas = [], tot = {};
+    CAMPOS.forEach(function(c){ tot[c] = 0; });
     ids.forEach(function(id){
-      var x = mov[id] || { ent: 0, ven: 0, con: 0, bai: 0, aju: 0 }, i0 = s0[id] || 0;
-      if (!i0 && !x.ent && !x.ven && !x.con && !x.bai && !x.aju) return;
-      var f = r4(i0 + x.ent - x.ven - x.con - x.bai + x.aju);
+      var x = mov[id] || vazio(), fi = s0.f[id] || 0, gi = s0.g[id] || 0;
+      if (!fi && !gi && !x.ent && !x.tra && !x.baf && !x.ajf && !x.ven && !x.con && !x.bai && !x.ajg) return;
       var p = getProdById(Number(id));
-      linhas.push({ id: id, nome: p ? p.nome : (nomesMov[id] || ('Sabor #' + id)), ini: i0, ent: x.ent, ven: x.ven, con: x.con, bai: x.bai, aju: x.aju, fim: f });
-      tot.ini += i0; tot.ent += x.ent; tot.ven += x.ven; tot.con += x.con; tot.bai += x.bai; tot.aju += x.aju; tot.fim += f;
+      var l = { id: id, nome: p ? p.nome : (nomesMov[id] || ('Sabor #' + id)),
+        fi: fi, ent: x.ent, tra: x.tra, baf: x.baf, ajf: x.ajf, ff: r4(fi + x.ent - x.tra - x.baf + x.ajf),
+        gi: gi, ven: x.ven, con: x.con, bai: x.bai, ajg: x.ajg, gf: r4(gi + x.tra - x.ven - x.con - x.bai + x.ajg) };
+      linhas.push(l);
+      CAMPOS.forEach(function(c){ tot[c] = r4(tot[c] + l[c]); });
     });
     return { linhas: linhas, tot: tot };
   }
@@ -3367,113 +3443,140 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
     var el = document.getElementById('admin-freezer'); if (!el) return;
     if (!frMesAtual) frMesAtual = chaveMes(new Date());
     frContagem = null;
-    el.innerHTML = '<div class="cp-topo"><h3 style="color:#2980b9;margin:0">🧊 Freezer: estoque de pastéis</h3>' +
-      '<div class="cp-sub">Entradas e baixas manuais são lançadas no botão <b>🧊 FREEZER</b> da tela inicial. Vendas do caixa e Consumo Próprio dão baixa sozinhos. Use a <b>contagem</b> para conferir o freezer de verdade com o sistema.</div></div>' +
+    el.innerHTML = '<div class="cp-topo"><h3 style="color:#2980b9;margin:0">🧊 Freezer e 🥶 Geladeira: estoque de pastéis</h3>' +
+      '<div class="cp-sub">No botão <b>🧊 FREEZER</b> da tela inicial a equipe lança os <b>pacotes de ' + PACOTE + '</b> que entram no freezer e os que passam para a <b>geladeira</b>. As vendas do caixa, o Consumo Próprio e as baixas (iFood/perda) saem da geladeira. Use a <b>contagem</b> para conferir o freezer e a geladeira de verdade com o sistema.</div></div>' +
       barraMes('fr', frMesAtual) +
       '<div id="fr-conteudo"></div>';
     atualizarRelFreezer();
   };
   function atualizarRelFreezer(){
     var el = document.getElementById('fr-conteudo'); if (!el) return;
-    var r = relFreezer(frMesAtual), t = r.tot, agora = fzSaldos(null), noFreezer = 0;
-    sabores().forEach(function(p){ var s = agora[p.id] || 0; if (s > 0) noFreezer += s; });
+    var r = relFreezer(frMesAtual), t = r.tot, agora = fzSaldos(null), noF = 0, noG = 0;
+    sabores().forEach(function(p){ var f = agora.f[p.id] || 0, g = agora.g[p.id] || 0; if (f > 0) noF += f; if (g > 0) noG += g; });
+    var dif = r4(t.ajf + t.ajg), peq = function(s){ return ' <small style="font-size:.5em">' + s + '</small>'; };
     var html = '<div class="rel-grid">' +
-      card('No freezer agora', fmtQ(noFreezer), '#2980b9') + card('Entraram no mês', fmtQ(t.ent)) +
-      card('Saíram no mês', fmtQ(t.ven + t.con + t.bai), '#c0392b') +
-      card('Ajustes de contagem', (t.aju > 0 ? '+' : '') + fmtQ(t.aju), t.aju < 0 ? '#c0392b' : '#27ae60') +
+      card('🧊 No freezer agora', pc(noF) + peq('pct'), '#2980b9') +
+      card('🥶 Na geladeira agora', fmtQ(noG) + peq('pastéis'), '#8e44ad') +
+      card('Entraram no freezer no mês', pc(t.ent) + peq('pct')) +
+      card('Vendidos no caixa no mês', fmtQ(t.ven) + peq('pastéis')) +
+      card('Diferença nas contagens', sinal(dif) + fmtQ(dif) + peq('pastéis'), dif < 0 ? '#c0392b' : '#27ae60') +
       '</div>' +
-      '<div class="no-print" style="margin:6px 0 4px"><button class="btn btn-blue btn-sm" onclick="frAbrirContagem()">📋 Fazer contagem do freezer</button></div>' +
+      '<div class="no-print" style="margin:6px 0 4px"><button class="btn btn-blue btn-sm" onclick="frAbrirContagem()">📋 Fazer contagem (freezer e geladeira)</button></div>' +
       '<div id="fr-contagem"></div>';
-    if (!r.linhas.length) html += '<div class="empty"><div class="ei">🧊</div><p>Nenhum movimento no freezer em ' + nomeMes(frMesAtual) + '.</p></div>';
-    else html += '<h4 class="cp-h4">📦 Movimento por sabor · ' + nomeMes(frMesAtual) + '</h4>' +
-      tabela(['Sabor', 'Início do mês', 'Entrou', 'Vendas', 'Consumo próprio', 'Baixas', 'Ajuste', 'Fim do mês'],
-        r.linhas.map(function(l){ return [esc(l.nome), fmtQ(l.ini), fmtQ(l.ent), fmtQ(l.ven), fmtQ(l.con), fmtQ(l.bai), (l.aju > 0 ? '+' : '') + fmtQ(l.aju), '<b' + (l.fim < 0 ? ' style="color:#c0392b"' : '') + '>' + fmtQ(l.fim) + '</b>']; }),
-        [0, 'r', 'r', 'r', 'r', 'r', 'r', 'r'],
-        ['TOTAL', fmtQ(t.ini), fmtQ(t.ent), fmtQ(t.ven), fmtQ(t.con), fmtQ(t.bai), (t.aju > 0 ? '+' : '') + fmtQ(t.aju), fmtQ(t.fim)]);
+    if (!r.linhas.length) html += '<div class="empty"><div class="ei">🧊</div><p>Nenhum movimento no freezer/geladeira em ' + nomeMes(frMesAtual) + '.</p></div>';
+    else {
+      var lf = r.linhas.filter(function(l){ return l.fi || l.ent || l.tra || l.baf || l.ajf || l.ff; });
+      var lg = r.linhas.filter(function(l){ return l.gi || l.tra || l.ven || l.con || l.bai || l.ajg || l.gf; });
+      var neg = function(v, txt){ return '<b' + (v < 0 ? ' style="color:#c0392b"' : '') + '>' + txt + '</b>'; };
+      html += '<h4 class="cp-h4">🧊 Freezer · em pacotes de ' + PACOTE + ' · ' + nomeMes(frMesAtual) + '</h4>' +
+        (lf.length ? tabela(['Sabor', 'Início', 'Entrou', 'Foi p/ geladeira', 'Ajuste', 'Fim'],
+          lf.map(function(l){ return [esc(l.nome), pc(l.fi), pc(l.ent), pc(l.tra + l.baf), sinal(l.ajf) + pc(l.ajf), neg(l.ff, pc(l.ff))]; }),
+          [0, 'r', 'r', 'r', 'r', 'r'],
+          ['TOTAL', pc(t.fi), pc(t.ent), pc(t.tra + t.baf), sinal(t.ajf) + pc(t.ajf), pc(t.ff)]) : '<p style="color:#888;font-size:.85em">Sem movimento no freezer.</p>') +
+        '<h4 class="cp-h4">🥶 Geladeira · em pastéis · ' + nomeMes(frMesAtual) + '</h4>' +
+        (lg.length ? tabela(['Sabor', 'Início', 'Veio do freezer', 'Vendas', 'Consumo próprio', 'Baixas', 'Ajuste', 'Fim'],
+          lg.map(function(l){ return [esc(l.nome), fmtQ(l.gi), fmtQ(l.tra), fmtQ(l.ven), fmtQ(l.con), fmtQ(l.bai), sinal(l.ajg) + fmtQ(l.ajg), neg(l.gf, fmtQ(l.gf))]; }),
+          [0, 'r', 'r', 'r', 'r', 'r', 'r', 'r'],
+          ['TOTAL', fmtQ(t.gi), fmtQ(t.tra), fmtQ(t.ven), fmtQ(t.con), fmtQ(t.bai), sinal(t.ajg) + fmtQ(t.ajg), fmtQ(t.gf)]) : '<p style="color:#888;font-size:.85em">Sem movimento na geladeira.</p>');
+    }
     var ini = inicioMes(frMesAtual), fim = inicioMes(somaMes(frMesAtual, 1));
     var movs = lerLS(CH_FZ_MOV, []).filter(function(m){ var d = new Date(m.data); return d >= ini && d < fim; }).reverse();
     if (movs.length) html += '<h4 class="cp-h4">🧾 Lançamentos manuais do mês</h4>' +
       tabela(['Data/hora', 'Tipo', 'Sabores', 'Qtd', ''], movs.map(function(m){
-        var ids = Object.keys(m.itens || {}), tot = ids.reduce(function(s, id){ return s + (Number(m.itens[id]) || 0); }, 0), aj = m.tipo === 'ajuste';
-        return [dataHora(m.data), m.tipo === 'entrada' ? '➕ Entrada' : (m.tipo === 'baixa' ? '➖ Baixa (' + esc(m.motivo || '') + ')' : '📋 Ajuste de contagem'),
-          esc(ids.map(function(id){ return (aj && m.itens[id] > 0 ? '+' : '') + fmtQ(m.itens[id]) + 'x ' + ((m.nomes && m.nomes[id]) || nomeSabor(id)); }).join(', ')),
-          (aj && tot > 0 ? '+' : '') + fmtQ(tot), botaoExcluir('frExcluir', m.id)];
+        var d = descMov(m);
+        return [dataHora(m.data), esc(d.tipo), esc(d.lista), esc(d.qtd), botaoExcluir('frExcluir', m.id)];
       }), [0, 0, 0, 'r', 'r']);
     el.innerHTML = html;
     renderContagem();
   }
-  function difHtml(d){ if (d === '' || d === undefined || d === null) return ''; d = Number(d); if (!d) return '<span style="color:#27ae60;font-weight:700">ok</span>'; return '<b style="color:' + (d < 0 ? '#c0392b' : '#27ae60') + '">' + (d > 0 ? '+' : '') + fmtQ(d) + '</b>'; }
+  function difContagem(id){
+    var S = frSaldosCont || fzSaldos(null), out = [], vf = frContagem.f[id], vg = frContagem.g[id];
+    function txt(d, emPct, icone){ return d ? '<b style="color:' + (d < 0 ? '#c0392b' : '#27ae60') + '">' + icone + ' ' + sinal(d) + (emPct ? pc(d) + ' pct' : fmtQ(d)) + '</b>' : '<span style="color:#27ae60;font-weight:700">' + icone + ' ok</span>'; }
+    if (vf !== undefined) out.push(txt(r4(vf * PACOTE - (S.f[id] || 0)), true, '🧊'));
+    if (vg !== undefined) out.push(txt(r4(vg - (S.g[id] || 0)), false, '🥶'));
+    return out.join('<br>');
+  }
   function renderContagem(){
     var el = document.getElementById('fr-contagem'); if (!el) return;
     if (!frContagem) { el.innerHTML = ''; return; }
-    frSaldosCont = fzSaldos(null);
-    el.innerHTML = '<div class="cm-form" style="border-color:rgba(41,128,185,.4)"><h4 style="color:#2980b9;margin-bottom:6px">📋 Contagem do freezer</h4>' +
-      '<div class="cp-sub" style="margin-bottom:10px">Conte os pastéis de cada sabor no freezer e digite ao lado. Só os sabores preenchidos são conferidos; a diferença vira um <b>ajuste</b> no relatório.</div>' +
+    var S = frSaldosCont = fzSaldos(null);
+    var inp = 'style="width:64px;padding:5px;text-align:center;border:2px solid rgba(41,128,185,.35);border-radius:7px;font-weight:700;color:#222"';
+    el.innerHTML = '<div class="cm-form" style="border-color:rgba(41,128,185,.4)"><h4 style="color:#2980b9;margin-bottom:6px">📋 Contagem do freezer e da geladeira</h4>' +
+      '<div class="cp-sub" style="margin-bottom:10px">Conte os <b>pacotes</b> de cada sabor no freezer e os <b>pastéis</b> na geladeira e digite ao lado. Só o que for preenchido é conferido; a diferença vira um <b>ajuste</b> no relatório.</div>' +
       '<input class="fz-busca" placeholder="🔍 Buscar sabor..." oninput="frFiltrarContagem(this.value)" style="margin-bottom:8px">' +
-      '<div class="cp-tab-wrap"><table><thead><tr><th>Sabor</th><th class="r">No sistema</th><th class="r">Contado</th><th class="r">Diferença</th></tr></thead><tbody>' +
+      '<div class="cp-tab-wrap"><table><thead><tr><th>Sabor</th><th class="r">🧊 Sistema<br>(pct)</th><th class="r">🧊 Contado<br>(pct)</th><th class="r">🥶 Sistema<br>(pastéis)</th><th class="r">🥶 Contado<br>(pastéis)</th><th class="r">Diferença</th></tr></thead><tbody>' +
       sabores().map(function(p){
-        var sis = frSaldosCont[p.id] || 0, v = frContagem[p.id];
+        var vf = frContagem.f[p.id], vg = frContagem.g[p.id];
         return '<tr data-busca="' + esc((p.nome + ' ' + p.cat + ' ' + p.id).toLowerCase()) + '"><td>' + (p.id < 1000 ? '<span class="fz-num">' + p.id + '</span>' : '') + esc(p.nome) + ' <small style="color:#999">' + esc(p.cat) + '</small></td>' +
-          '<td class="r">' + fmtQ(sis) + '</td>' +
-          '<td class="r"><input type="number" min="0" step="1" inputmode="numeric" value="' + (v === undefined ? '' : v) + '" oninput="frDigitarContagem(' + p.id + ',this.value)" style="width:70px;padding:5px;text-align:center;border:2px solid rgba(41,128,185,.35);border-radius:7px;font-weight:700;color:#222"></td>' +
-          '<td class="r" id="frdif-' + p.id + '">' + (v === undefined ? '' : difHtml(r4(v - sis))) + '</td></tr>';
+          '<td class="r">' + pc(S.f[p.id] || 0) + '</td>' +
+          '<td class="r"><input type="number" min="0" step="1" inputmode="numeric" id="frcf-' + p.id + '" value="' + (vf === undefined ? '' : vf) + '" oninput="frDigitarContagem(\'f\',' + p.id + ',this.value)" ' + inp + '></td>' +
+          '<td class="r">' + fmtQ(S.g[p.id] || 0) + '</td>' +
+          '<td class="r"><input type="number" min="0" step="1" inputmode="numeric" id="frcg-' + p.id + '" value="' + (vg === undefined ? '' : vg) + '" oninput="frDigitarContagem(\'g\',' + p.id + ',this.value)" ' + inp + '></td>' +
+          '<td class="r" id="frdif-' + p.id + '">' + difContagem(p.id) + '</td></tr>';
       }).join('') + '</tbody></table></div>' +
       '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-gray btn-sm" onclick="frFecharContagem()">Cancelar</button><button class="btn btn-blue" onclick="frSalvarContagem()">✅ Salvar contagem</button></div></div>';
   }
-  window.frAbrirContagem = function(){ frContagem = frContagem || {}; renderContagem(); var c = document.getElementById('fr-contagem'); if (c && c.scrollIntoView) c.scrollIntoView({behavior: 'smooth', block: 'start'}); };
+  window.frAbrirContagem = function(){ frContagem = frContagem || { f: {}, g: {} }; renderContagem(); var c = document.getElementById('fr-contagem'); if (c && c.scrollIntoView) c.scrollIntoView({behavior: 'smooth', block: 'start'}); };
   window.frFecharContagem = function(){ frContagem = null; renderContagem(); };
   window.frFiltrarContagem = function(v){ v = (v || '').toLowerCase().trim(); document.querySelectorAll('#fr-contagem tr[data-busca]').forEach(function(tr){ tr.style.display = !v || tr.getAttribute('data-busca').indexOf(v) >= 0 ? '' : 'none'; }); };
-  window.frDigitarContagem = function(id, v){
-    if (!frContagem) frContagem = {};
-    if (v === '' || v == null) delete frContagem[id]; else frContagem[id] = Math.max(0, Math.floor(Number(v) || 0));
-    var td = document.getElementById('frdif-' + id);
-    if (td) td.innerHTML = frContagem[id] === undefined ? '' : difHtml(r4(frContagem[id] - (frSaldosCont[id] || 0)));
+  window.frDigitarContagem = function(loc, id, v){
+    if (!frContagem) frContagem = { f: {}, g: {} };
+    var o = frContagem[loc]; if (!o) return;
+    if (v === '' || v == null) delete o[id]; else o[id] = Math.max(0, Math.floor(Number(v) || 0));
+    var td = document.getElementById('frdif-' + id); if (td) td.innerHTML = difContagem(id);
   };
   window.frSalvarContagem = function(){
-    var s = fzSaldos(null), itens = {}, nomes = {}, n = 0, linhas = [], conferidos = Object.keys(frContagem || {});
-    if (!conferidos.length) { alert('Digite a contagem de pelo menos um sabor.'); return; }
-    conferidos.forEach(function(id){
-      var dif = r4(Number(frContagem[id]) - (s[id] || 0));
-      if (dif) { itens[id] = dif; nomes[id] = nomeSabor(id); n++; linhas.push((dif > 0 ? '+' : '') + fmtQ(dif) + '  ' + nomes[id]); }
-    });
-    if (!n) { alert('Tudo certo! Os ' + conferidos.length + ' sabor(es) conferidos batem com o sistema.'); frContagem = null; atualizarRelFreezer(); return; }
-    if (!confirm('Contagem de ' + conferidos.length + ' sabor(es). Diferenças:\n\n' + linhas.slice(0, 25).join('\n') + (linhas.length > 25 ? '\n...' : '') + '\n\nSalvar o ajuste? O estoque do sistema passa a ser o que foi contado.')) return;
-    var movs = lerLS(CH_FZ_MOV, []);
-    movs.push({ id: novoId('fz'), data: new Date().toISOString(), tipo: 'ajuste', motivo: 'Contagem', itens: itens, nomes: nomes });
+    if (!frContagem) return;
+    var S = fzSaldos(null), itF = {}, itG = {}, nomes = {}, linhas = [], nF = 0, nG = 0;
+    var cf = Object.keys(frContagem.f), cg = Object.keys(frContagem.g);
+    if (!cf.length && !cg.length) { alert('Digite a contagem de pelo menos um sabor.'); return; }
+    cf.forEach(function(id){ var d = r4(frContagem.f[id] * PACOTE - (S.f[id] || 0)); if (d) { itF[id] = d; nomes[id] = nomeSabor(id); nF++; linhas.push('🧊 freezer ' + sinal(d) + pc(d) + ' pct  ' + nomes[id]); } });
+    cg.forEach(function(id){ var d = r4(frContagem.g[id] - (S.g[id] || 0)); if (d) { itG[id] = d; nomes[id] = nomeSabor(id); nG++; linhas.push('🥶 geladeira ' + sinal(d) + fmtQ(d) + '  ' + nomes[id]); } });
+    if (!nF && !nG) { alert('Tudo certo! Tudo o que foi contado (' + (cf.length + cg.length) + ') bate com o sistema.'); frContagem = null; atualizarRelFreezer(); return; }
+    if (!confirm('Diferenças encontradas na contagem:\n\n' + linhas.slice(0, 25).join('\n') + (linhas.length > 25 ? '\n...' : '') + '\n\nSalvar o ajuste? O estoque do sistema passa a ser o que foi contado.')) return;
+    var movs = lerLS(CH_FZ_MOV, []), quando = new Date().toISOString();
+    if (nF) movs.push({ id: novoId('fz'), data: quando, tipo: 'ajuste', local: 'freezer', motivo: 'Contagem', itens: itF, nomes: nomes });
+    if (nG) movs.push({ id: novoId('fz'), data: quando, tipo: 'ajuste', local: 'geladeira', motivo: 'Contagem', itens: itG, nomes: nomes });
     if (!gravarLS(CH_FZ_MOV, movs)) return;
     frContagem = null;
     atualizarRelFreezer();
-    aviso('📋 Contagem salva: ' + n + ' ajuste(s)', '#2980b9');
+    aviso('📋 Contagem salva: ' + (nF + nG) + ' ajuste(s)', '#2980b9');
   };
   window.frExcluir = function(id){
     var movs = lerLS(CH_FZ_MOV, []), m = movs.find(function(x){ return x.id === id; }); if (!m) return;
-    if (!confirm('Excluir este lançamento do freezer (' + dataHora(m.data) + ')?\n\nO estoque volta a ser como era sem ele.')) return;
+    var d = descMov(m);
+    if (!confirm('Excluir este lançamento?\n\n' + dataHora(m.data) + ' · ' + d.tipo + ' · ' + d.qtd + '\n\nO estoque volta a ser como era sem ele.')) return;
     gravarLS(CH_FZ_MOV, movs.filter(function(x){ return x.id !== id; }));
     atualizarRelFreezer();
   };
   window.frMes = function(delta, valor){ frMesAtual = valor || somaMes(frMesAtual, delta || 0); var i = document.getElementById('fr-mes'); if (i) i.value = frMesAtual; atualizarRelFreezer(); };
   window.frImprimir = function(){
     var r = relFreezer(frMesAtual), t = r.tot;
-    if (!r.linhas.length) { alert('Nenhum movimento no freezer em ' + nomeMes(frMesAtual) + '.'); return; }
-    abrirPrint('Freezer', '<div class="recibo-print">' + cabecalhoPrint('ESTOQUE DO FREEZER (PASTÉIS)', frMesAtual) +
-      '<div class="rc-lin"><span>Início do mês</span><span>' + fmtQ(t.ini) + '</span></div>' +
-      '<div class="rc-lin"><span>+ Entrou</span><span>' + fmtQ(t.ent) + '</span></div>' +
-      '<div class="rc-lin"><span>- Vendas</span><span>' + fmtQ(t.ven) + '</span></div>' +
-      '<div class="rc-lin"><span>- Consumo próprio</span><span>' + fmtQ(t.con) + '</span></div>' +
-      '<div class="rc-lin"><span>- Baixas (iFood/perda)</span><span>' + fmtQ(t.bai) + '</span></div>' +
-      '<div class="rc-lin"><span>Ajustes de contagem</span><span>' + (t.aju > 0 ? '+' : '') + fmtQ(t.aju) + '</span></div>' +
-      '<div class="rc-lin rc-big"><span>FIM DO MÊS</span><span>' + fmtQ(t.fim) + '</span></div>' +
-      '<hr><div class="rc-bold">POR SABOR (início + entrou - saiu = fim)</div>' +
-      r.linhas.map(function(l){ return '<div class="rc-it">' + esc(l.nome) + '<div>' + fmtQ(l.ini) + ' + ' + fmtQ(l.ent) + ' - ' + fmtQ(l.ven + l.con + l.bai) + (l.aju ? ' (ajuste ' + (l.aju > 0 ? '+' : '') + fmtQ(l.aju) + ')' : '') + ' = ' + fmtQ(l.fim) + '</div></div>'; }).join('') +
+    if (!r.linhas.length) { alert('Nenhum movimento no freezer/geladeira em ' + nomeMes(frMesAtual) + '.'); return; }
+    abrirPrint('Freezer e Geladeira', '<div class="recibo-print">' + cabecalhoPrint('ESTOQUE FREEZER E GELADEIRA', frMesAtual, 'Freezer em pacotes de ' + PACOTE + ' - geladeira em pastéis') +
+      '<div class="rc-bold">FREEZER (pacotes)</div>' +
+      lin('Início do mês', pc(t.fi)) + lin('+ Entrou', pc(t.ent)) + lin('- Foi p/ geladeira', pc(t.tra + t.baf)) + lin('Ajustes de contagem', sinal(t.ajf) + pc(t.ajf)) +
+      '<div class="rc-lin rc-big"><span>FIM</span><span>' + pc(t.ff) + ' pct</span></div>' +
+      '<hr><div class="rc-bold">GELADEIRA (pastéis)</div>' +
+      lin('Início do mês', fmtQ(t.gi)) + lin('+ Veio do freezer', fmtQ(t.tra)) + lin('- Vendas', fmtQ(t.ven)) + lin('- Consumo próprio', fmtQ(t.con)) + lin('- Baixas (iFood/perda)', fmtQ(t.bai)) + lin('Ajustes de contagem', sinal(t.ajg) + fmtQ(t.ajg)) +
+      '<div class="rc-lin rc-big"><span>FIM</span><span>' + fmtQ(t.gf) + '</span></div>' +
+      '<hr><div class="rc-bold">POR SABOR</div>' +
+      r.linhas.map(function(l){
+        return '<div class="rc-it">' + esc(l.nome) +
+          '<div>Freezer: ' + pc(l.fi) + ' + ' + pc(l.ent) + ' - ' + pc(l.tra + l.baf) + (l.ajf ? ' (ajuste ' + sinal(l.ajf) + pc(l.ajf) + ')' : '') + ' = ' + pc(l.ff) + ' pct</div>' +
+          '<div>Geladeira: ' + fmtQ(l.gi) + ' + ' + fmtQ(l.tra) + ' - ' + fmtQ(l.ven + l.con + l.bai) + (l.ajg ? ' (ajuste ' + sinal(l.ajg) + fmtQ(l.ajg) + ')' : '') + ' = ' + fmtQ(l.gf) + '</div></div>';
+      }).join('') +
       rodapePrint() + '</div>');
   };
   window.frPlanilha = function(){
     var r = relFreezer(frMesAtual), t = r.tot;
-    if (!r.linhas.length) { alert('Nenhum movimento no freezer em ' + nomeMes(frMesAtual) + '.'); return; }
-    var L = [['Sabor', 'Início do mês', 'Entrou', 'Vendas', 'Consumo próprio', 'Baixas (iFood/perda)', 'Ajuste contagem', 'Fim do mês']];
-    r.linhas.forEach(function(l){ L.push([l.nome, fmtQ(l.ini), fmtQ(l.ent), fmtQ(l.ven), fmtQ(l.con), fmtQ(l.bai), fmtQ(l.aju), fmtQ(l.fim)]); });
-    L.push(['TOTAL', fmtQ(t.ini), fmtQ(t.ent), fmtQ(t.ven), fmtQ(t.con), fmtQ(t.bai), fmtQ(t.aju), fmtQ(t.fim)]);
-    baixarCSV('freezer-' + frMesAtual + '.csv', L);
+    if (!r.linhas.length) { alert('Nenhum movimento no freezer/geladeira em ' + nomeMes(frMesAtual) + '.'); return; }
+    var L = [['Sabor', 'Freezer início (pct)', 'Entrou no freezer (pct)', 'Foi p/ geladeira (pct)', 'Ajuste freezer (pct)', 'Freezer fim (pct)',
+              'Geladeira início (un)', 'Veio do freezer (un)', 'Vendas (un)', 'Consumo próprio (un)', 'Baixas iFood/perda (un)', 'Ajuste geladeira (un)', 'Geladeira fim (un)']];
+    function linha(nome, l){ return [nome, pc(l.fi), pc(l.ent), pc(l.tra + l.baf), pc(l.ajf), pc(l.ff), fmtQ(l.gi), fmtQ(l.tra), fmtQ(l.ven), fmtQ(l.con), fmtQ(l.bai), fmtQ(l.ajg), fmtQ(l.gf)]; }
+    r.linhas.forEach(function(l){ L.push(linha(l.nome, l)); });
+    L.push(linha('TOTAL', t));
+    baixarCSV('freezer-geladeira-' + frMesAtual + '.csv', L);
   };
 
   /* ================= TECLA ESC: fecha a janela aberta ou volta para as mesas ================= */
