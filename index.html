@@ -68,7 +68,8 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f0f0;color:#222;min-height:
 
 /* BUSCA + FILTROS */
 .search-wrap{position:relative;margin-bottom:10px}
-.search-wrap input{width:100%;padding:10px 14px 10px 38px;background:#ffffff;border:2px solid rgba(192,57,43,.2);border-radius:10px;color:#fff;font-size:.9em}
+.search-wrap input{width:100%;padding:10px 14px 10px 38px;background:#ffffff;border:2px solid rgba(192,57,43,.2);border-radius:10px;color:#222;font-size:.9em}
+.search-wrap input::placeholder{color:#999}
 .search-wrap input:focus{outline:none;border-color:var(--red)}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--red)}
 .filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
@@ -192,6 +193,11 @@ html,body{width:100%!important;background:#fff!important;color:#000!important;ma
 .recibo-print .rc-lin>:last-child{white-space:nowrap}
 .recibo-print .rc-it{padding-left:1.7em;text-indent:-1.7em;break-inside:avoid}
 .recibo-print .rc-it div{text-indent:0}
+/* Comanda da cozinha: letra um pouco maior e espaco entre os pasteis */
+.recibo-print.cozinha{font-size:16px;line-height:1.3}
+.recibo-print.cozinha .rc-it{margin:0 0 12px}
+.recibo-print.cozinha .rc-it div{margin-top:2px}
+.recibo-print.cozinha hr{margin:6px 0}
 
 /* MISC */
 .empty{text-align:center;padding:40px 20px;color:#444}
@@ -227,12 +233,56 @@ table tr:hover td{background:rgba(192,57,43,.06)}
 .mesa-card.ocupada:not(.cliente) .mesa-status{color:#b9770e!important;font-weight:800}
 .mesa-card.ocupada:not(.cliente) .mesa-total{font-size:1.08em;font-weight:800}
 .mesa-itens-badge{width:26px;height:26px;font-size:.8em}
+/* ===== Logo grande no espaco vazio a direita (so na tela inicial) ===== */
+.mesas-body{position:relative}
+.mesas-logo-lado{position:absolute;top:40px;right:30px;width:min(260px,calc(50vw - 400px));height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);pointer-events:none}
+@media (max-width:1100px){.mesas-logo-lado{display:none}}
+/* ===== CONSUMO PROPRIO (card na tela inicial + modo do PDV) ===== */
+.mesa-card.consumo{border-color:#16a085!important;background:rgba(22,160,133,.08)!important}
+.mesa-card.consumo:hover{border-color:#1abc9c!important;box-shadow:0 12px 30px rgba(22,160,133,.35)!important}
+.mesa-card.consumo .mesa-status{color:#16a085!important;font-weight:700}
+.mesa-card.consumo .mesa-total{color:#16a085!important}
+.mesa-card.consumo.consumo-aberto{border-width:4px!important;background:rgba(22,160,133,.2)!important;box-shadow:0 6px 20px rgba(22,160,133,.35)}
+.mesa-card.consumo .mesa-itens-badge{background:#16a085}
+#tela-pdv.modo-consumo .pgto-grid,#tela-pdv.modo-consumo #troco-wrap,#tela-pdv.modo-consumo .div-pgto-btn,#tela-pdv.modo-consumo .btn-finalizar,#tela-pdv.modo-consumo .btn-dividir-hdr{display:none!important}
+#tela-pdv:not(.modo-consumo) .btn-registrar-consumo,#tela-pdv:not(.modo-consumo) .aviso-consumo{display:none!important}
+#tela-pdv.modo-consumo .pdv-mesa-info{color:#16a085}
+.aviso-consumo{background:rgba(22,160,133,.18);border:1px solid rgba(22,160,133,.6);color:#7fe0cc;border-radius:8px;padding:6px 8px;font-size:.74em;font-weight:700;margin:5px 0;text-align:center}
+.btn-registrar-consumo{background:linear-gradient(135deg,#16a085,#1abc9c);color:#fff}
+/* ===== ADICIONAIS NO CARRINHO (escondidos ate marcar a caixa) ===== */
+.cart-add-chk{display:inline-flex;align-items:center;gap:4px;font-size:.72em;color:#f39c12;font-weight:700;border:1px solid rgba(243,156,18,.45);border-radius:5px;padding:2px 7px;cursor:pointer;margin-top:4px;user-select:none}
+.cart-add-chk input{width:14px;height:14px;accent-color:#f39c12;cursor:pointer;margin:0}
+.cart-adds-box{margin-bottom:5px;background:rgba(243,156,18,.07);border-radius:6px;padding:5px 6px;border:1px solid rgba(243,156,18,.3)}
+.cart-adds-lista{display:flex;flex-wrap:wrap;gap:4px}
+.cart-add-chip{background:#2a2a2a;border:1px solid rgba(243,156,18,.45);color:#eee;border-radius:14px;padding:3px 8px;font-size:.7em;cursor:pointer}
+.cart-add-chip b{color:#f39c12;font-weight:700}
+.cart-add-chip.on{background:#f39c12;border-color:#f39c12;color:#fff}
+.cart-add-chip.on b{color:#fff}
+.cart-env{display:inline-block;margin-left:5px;font-size:.78em;font-weight:700;color:#2ecc71;background:rgba(46,204,113,.12);border-radius:10px;padding:0 6px;vertical-align:middle}
+.cmd-aviso{background:#fff7e6;border:1px solid #f5c26b;color:#7a5200;border-radius:8px;padding:8px 10px;font-size:.82em;margin-bottom:10px;line-height:1.4}
+.cmd-aviso.ok{background:#eafaf1;border-color:#82d8a6;color:#1e7a46}
+/* ===== GERENCIAL: Consumo Proprio / Contas do Mauro ===== */
+.cp-topo{margin-bottom:6px}
+.cp-sub{font-size:.82em;color:#777;margin-top:4px;line-height:1.4}
+.cp-barra{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:12px 0 6px}
+.cp-barra .tab{padding:7px 12px}
+.cp-mes{padding:6px 10px;border:2px solid rgba(192,57,43,.2);border-radius:9px;font-size:.85em;font-weight:700;color:#333;background:#fff;font-family:inherit}
+.cp-h4{color:var(--red);margin:18px 0 8px}
+.cp-tab-wrap{overflow-x:auto}
+.cp-tab-wrap td.r,.cp-tab-wrap th.r{text-align:right;white-space:nowrap}
+.cm-form{background:#fff;border:2px solid rgba(192,57,43,.25);border-radius:12px;padding:14px 16px;margin:10px 0 6px}
+.cm-campos{display:flex;flex-wrap:wrap;gap:10px}
+.cm-c{flex:1 1 140px}
+.cm-c.cm-conta{flex:2 1 230px}
+.cm-c.cm-obs{flex:2 1 220px}
+.cm-c label{display:block;font-size:.72em;color:#777;font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.cm-c input,.cm-c select{width:100%;padding:8px 10px;background:#f8f8f8;border:1px solid rgba(192,57,43,.3);border-radius:7px;color:#222;font-size:.9em;font-family:inherit}
 </style>
 
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
-  import { getFirestore, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
+  import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBHK_pJO_-XvIZ3gsiSNNaq7NfHsW-VPZI",
@@ -247,7 +297,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
   const db = getFirestore(app);
 
   // Expose to global scope for the PDV to use
-  window._pdvFirestore = { db, collection, addDoc, getDocs };
+  window._pdvFirestore = { db, collection, addDoc, getDocs, doc, setDoc, deleteDoc };
   window._pdvFirestoreReady = true;
   console.log('[PDV Firebase] Firestore pronto');
 </script>
@@ -268,12 +318,14 @@ table tr:hover td{background:rgba(192,57,43,.06)}
     <div class="hdr-logo"><img src="https://spyfer2-ux.github.io/pdv-pastelaria/logo.png" alt="Candeias Jr" style="height:56px;object-fit:contain;vertical-align:middle;border-radius:6px"></div>
     <div id="hdr-relogio" style="color:#ffcccc;font-size:.85em;font-weight:600"></div>
     <div class="hdr-btns">
+      <button class="btn btn-blue btn-sm" onclick="abrirFreezer()">🧊 FREEZER</button>
       <button class="btn btn-gray btn-sm" onclick="irAdmin()">⚙️ Gerencial</button>
     </div>
   </div>
   <div class="mesas-body">
     <div class="mesas-titulo">Selecione uma mesa para iniciar o atendimento</div>
     <div class="mesas-grid" id="mesas-grid"></div>
+    <img class="mesas-logo-lado" src="https://spyfer2-ux.github.io/pdv-pastelaria/logo.png" alt="Candeias Jr">
   </div>
 </div>
 
@@ -286,7 +338,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
     </div>
     <div id="pdv-relogio" style="color:var(--gold);font-size:.85em;font-weight:600"></div>
     <div style="display:flex;gap:7px;flex-wrap:wrap">
-      <button class="btn btn-gold btn-sm" onclick="abrirDivisao()">💳 Dividir</button>
+      <button class="btn btn-gold btn-sm btn-dividir-hdr" onclick="abrirDivisao()">💳 Dividir</button>
       <button class="btn btn-blue btn-sm" onclick="imprimirComanda()">🖨️ Comanda</button>
       <button class="btn btn-gray btn-sm" onclick="voltarMesas()">🏠 Mesas</button>
       <div style="position:relative;display:inline-block"><button onclick="toggleFerramentas()" id="btn-ferramentas" style="background:#555;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:.82em;cursor:pointer;display:flex;align-items:center;gap:5px;height:32px">🔧 Ferramentas</button><div id="menu-ferramentas" style="display:none;position:absolute;right:0;top:110%;background:#222;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:210px;z-index:9999;overflow:hidden"><div onclick="abrirCalculadoraFlutuante();fecharMenuFerramentas()" style="padding:12px 16px;cursor:pointer;color:#fff;border-bottom:1px solid #333" onmouseover="this.style.background='#333'" onmouseout="this.style.background='transparent'">🧲 Calculadora</div><div onclick="abrirRelatorios();fecharMenuFerramentas()" style="padding:12px 16px;cursor:pointer;color:#fff;border-bottom:1px solid #333" onmouseover="this.style.background='#333'" onmouseout="this.style.background='transparent'">📊 Relatorios</div><div onclick="abrirCaixa();fecharMenuFerramentas()" style="padding:12px 16px;cursor:pointer;color:#fff;border-bottom:1px solid #333" onmouseover="this.style.background='#333'" onmouseout="this.style.background='transparent'">💰 Caixa</div><div onclick="abrirReimpressao();fecharMenuFerramentas()" style="padding:12px 16px;cursor:pointer;color:#fff" onmouseover="this.style.background='#333'" onmouseout="this.style.background='transparent'">🗂 Reimprimir</div></div></div>
@@ -309,7 +361,8 @@ table tr:hover td{background:rgba(192,57,43,.06)}
       <div class="cart-items" id="cart-items"></div>
       <div class="cart-foot">
         <div class="tl"><span class="lab">Subtotal</span><span class="val" id="sub-total">R$ 0,00</span></div>
-        <div class="tl big"><span class="lab">TOTAL</span><span class="val" id="cart-total">R$ 0,00</span></div>
+        <div class="tl big"><span class="lab" id="lbl-total">TOTAL</span><span class="val" id="cart-total">R$ 0,00</span></div>
+        <div class="aviso-consumo">🍽️ CONSUMO PRÓPRIO — não entra no faturamento nem no caixa</div>
         <div class="pgto-grid">
           <button class="pbtn on" id="pb-dinheiro" onclick="selPgto('dinheiro')">💵 Dinheiro</button>
           <button class="pbtn" id="pb-pix" onclick="selPgto('pix')">📱 PIX</button>
@@ -321,10 +374,7 @@ table tr:hover td{background:rgba(192,57,43,.06)}
           <div class="troco-res" id="troco-res"></div>
         </div>
         <button class="div-pgto-btn" onclick="abrirDivisao()">⚖️ Dividir conta por itens</button>
-        <div class="fg" style="margin-top:5px">
-          <textarea class="fg" id="obs-venda" placeholder="Obs. geral da venda..." rows="2" style="width:100%;padding:7px 10px;background:#f8f8f8;border:2px solid rgba(192,57,43,.2);border-radius:8px;color:#ccc;font-size:.8em;resize:none"></textarea>
-        </div>
-        <button class="btn btn-full btn-lg" style="background:#f39c12;color:#fff;margin-bottom:6px" onclick="salvarPedido()">📋 DEIXAR EM ABERTO (pagar depois)</button><button class="btn btn-green btn-full btn-lg" onclick="finalizarVenda()">✅ FINALIZAR VENDA</button>
+        <button class="btn btn-full btn-lg" id="btn-deixar-aberto" style="background:#f39c12;color:#fff;margin-bottom:6px" onclick="salvarPedido()">📋 DEIXAR EM ABERTO (pagar depois)</button><button class="btn btn-green btn-full btn-lg btn-finalizar" onclick="finalizarVenda()">✅ FINALIZAR VENDA</button><button class="btn btn-full btn-lg btn-registrar-consumo" onclick="registrarConsumoProprio()">✅ REGISTRAR CONSUMO (sem cobrança)</button>
       </div>
     </div>
   </div>
@@ -359,16 +409,31 @@ table tr:hover td{background:rgba(192,57,43,.06)}
   </div>
   <div style="padding:20px;max-width:1000px;margin:0 auto">
     <div class="tabs no-print">
-      <button class="tab on" onclick="showAdminTab('rel')">📊 Relatórios</button>
-      <button class="tab" onclick="showAdminTab('hist')">📋 Histórico</button>
-      <button class="tab" onclick="showAdminTab('prods')">🛒 Produtos</button>
+      <button class="tab on" data-tab="rel" onclick="showAdminTab('rel')">📊 Relatórios</button>
+      <button class="tab" data-tab="hist" onclick="showAdminTab('hist')">📋 Histórico</button>
+      <button class="tab" data-tab="prods" onclick="showAdminTab('prods')">🛒 Produtos</button>
+      <button class="tab" data-tab="consumo" onclick="showAdminTab('consumo')">🍽️ Consumo Próprio</button>
+      <button class="tab" data-tab="freezer" onclick="showAdminTab('freezer')">🧊 Freezer</button>
+      <button class="tab" data-tab="mauro" onclick="showAdminTab('mauro')">🏠 Contas do Mauro</button>
       <button class="tab" onclick="abrirCobrancas()">💳 Cobranças em Aberto</button>
       <button class="tab" onclick="atualizarSistemaPDV()">🔄 Atualizar Sistema</button>
     </div>
     <div id="admin-rel"></div>
     <div id="admin-hist" style="display:none"></div>
     <div id="admin-prods" style="display:none"></div>
+    <div id="admin-consumo" style="display:none"></div>
+    <div id="admin-freezer" style="display:none"></div>
+    <div id="admin-mauro" style="display:none"></div>
   </div>
+</div>
+
+<!-- TELA FREEZER (estoque virtual de pasteis) -->
+<div id="tela-freezer" class="tela bloco">
+  <div class="hdr no-print">
+    <div class="hdr-logo" style="color:#fff;font-weight:800;font-size:1.05em">🧊 FREEZER · estoque de pastéis</div>
+    <div class="hdr-btns"><button class="btn btn-gray btn-sm" onclick="irMesas()">🏠 Voltar</button></div>
+  </div>
+  <div id="fz-corpo" style="padding:16px 16px 120px;max-width:900px;margin:0 auto"></div>
 </div>
 
 <!-- MODAL ADICIONAIS -->
@@ -410,11 +475,13 @@ table tr:hover td{background:rgba(192,57,43,.06)}
 <!-- MODAL COMANDA -->
 <div class="modal" id="modal-comanda">
   <div class="mbox" style="max-width:420px">
-    <h3 class="no-print">🖨️ Comanda</h3>
+    <h3 class="no-print" id="comanda-titulo">🖨️ Comanda</h3>
+    <div id="comanda-aviso" class="no-print"></div>
     <div id="comanda-conteudo"></div>
     <div class="mbtns no-print">
       <button class="btn btn-gray btn-sm" onclick="fecharModal('modal-comanda')">Fechar</button>
-      <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn btn-blue btn-sm" id="btn-comanda-alternar" style="display:none" onclick="alternarComanda()">📄 Comanda completa</button>
+      <button class="btn btn-gold btn-sm" id="btn-comanda-imprimir" onclick="imprimirComandaModal()">🖨️ Imprimir</button>
     </div>
   </div>
 </div>
@@ -608,7 +675,7 @@ function abrirMesa(num) {
   selPgto('dinheiro');
 }
 
-function cancelarPedido() { var m = state.mesas[state.mesaAtual]; if (!m) return; if (!m.itens.length) { alert('Nao ha pedido para cancelar nesta mesa.'); return; } if (!confirm('Tem certeza que deseja CANCELAR o pedido da Mesa ' + m.num + '?\n\nTodos os itens NAO PAGOS serao apagados. Esta acao nao pode ser desfeita.')) return; m.itens = []; salvarMesas(); renderCart(); renderMesas(); irMesas(); } function salvarPedido() { var m = state.mesas[state.mesaAtual]; if (!m) return; if (!m.itens.length && !(m.pagos && m.pagos.length)) { alert('Adicione itens antes de deixar o pedido em aberto.'); return; } salvarMesas(); renderMesas(); irMesas(); } function limparMesa() {
+function cancelarPedido() { var m = state.mesas[state.mesaAtual]; if (!m) return; if (!m.itens.length) { alert('Nao ha pedido para cancelar nesta mesa.'); return; } if (!confirm('Tem certeza que deseja CANCELAR o pedido ' + (m.consumo ? 'do CONSUMO PRÓPRIO' : 'da Mesa ' + m.num) + '?\n\nTodos os itens NAO PAGOS serao apagados. Esta acao nao pode ser desfeita.')) return; m.itens = []; salvarMesas(); renderCart(); renderMesas(); irMesas(); } function salvarPedido() { var m = state.mesas[state.mesaAtual]; if (!m) return; if (!m.itens.length && !(m.pagos && m.pagos.length)) { alert('Adicione itens antes de deixar o pedido em aberto.'); return; } salvarMesas(); renderMesas(); irMesas(); } function limparMesa() {
   var m = state.mesas[state.mesaAtual];
   if (!confirm('Limpar todos os itens da Mesa ' + m.num + '?')) return;
   m.itens = []; m.pagos = [];
@@ -672,18 +739,33 @@ function getProdById(id) {
 }
 
 // ======= CARRINHO =======
+// Toque no produto = entra direto no carrinho (sem abrir adicionais).
+// Se o cliente quiser adicionais, marca a caixa "Adicionais" no item do carrinho.
+var _addAbertos = {};
 function adicionarItem(id) {
 var prod = getProdById(id);
 if (!prod) return;
-var adds = getAdicionaisDoProd(prod.id);
-if (adds && adds.length > 0) {
-abrirModalAdicionais(prod);
-} else {
 var mesa = state.mesas[state.mesaAtual];
-mesa.itens.push({uid: Date.now() + Math.random(), id: prod.id, nome: prod.nome, preco: prod.preco, cat: prod.cat, qty: 1, obs: '', adicionais: []});
+if (!mesa) return;
+mesa.itens.push({uid: Date.now() + Math.random(), id: prod.id, nome: prod.nome, preco: prod.preco, precoBase: prod.preco, cat: prod.cat, qty: 1, obs: '', adicionais: []});
 salvarMesas();
 renderCart();
+var ci = document.getElementById('cart-items'); if (ci) ci.scrollTop = ci.scrollHeight;
 }
+function marcarAlterado(item) { if (item && (Number(item.env) || 0) > 0) item.alt = true; }
+function toggleAddsItem(uid, on) { _addAbertos[uid] = !!on; renderCart(); }
+function toggleAddItemLista(uid, ai) {
+  var mesa = state.mesas[state.mesaAtual]; if (!mesa) return;
+  var item = mesa.itens.find(function(i){ return i.uid === uid; }); if (!item) return;
+  var a = getAdicionaisDoProd(item.id)[ai]; if (!a) return;
+  if (!item.adicionais) item.adicionais = [];
+  var pos = item.adicionais.findIndex(function(x){ return x.nome === a.nome; });
+  if (pos >= 0) { item.preco -= parseFloat(item.adicionais[pos].preco) || 0; item.adicionais.splice(pos, 1); }
+  else { item.adicionais.push({nome: a.nome, preco: parseFloat(a.preco) || 0}); item.preco += parseFloat(a.preco) || 0; }
+  item.preco = Math.round(item.preco * 100) / 100;
+  marcarAlterado(item);
+  salvarMesas();
+  renderCart();
 }
 
 var ADICIONAIS_DEFAULT = [{nome:'Atum Mistura',preco:7.00},{nome:'Azeitona',preco:2.00},{nome:'Bacon Mistura',preco:6.00},{nome:'Berinjela',preco:6.00},{nome:'Brócolis',preco:6.00},{nome:'Carne Mistura',preco:6.80},{nome:'Carne Seca',preco:11.00},{nome:'Catupiry',preco:6.50},{nome:'Cebola',preco:2.00},{nome:'Cheddar',preco:4.50},{nome:'Escarola',preco:6.00},{nome:'Frango Mistura',preco:5.00},{nome:'Milho',preco:3.00},{nome:'Mussarela',preco:6.00},{nome:'Ovo',preco:2.90},{nome:'Palmito Puro',preco:7.50},{nome:'Presunto',preco:3.00},{nome:'Provolone',preco:5.00},{nome:'Tomate',preco:2.50},{nome:'Calabresa Fatiada',preco:4.90},{nome:'Carne Louca Mistura',preco:7.00},{nome:'Salame',preco:7.90},{nome:'Tomate Seco',preco:4.90}]; var CATS_COM_ADICIONAIS = ['Bauru','Brócolis','Calabresa','Carne','Carne Louca','Carne Seca','Escarola','Frango','Mussarela','Palmito','Salame','Salgados','Vegano','Os Gigantes','Atum','Berinjela']; function getAdicionaisDoProd(prodId) { var all = JSON.parse(localStorage.getItem('opg_adicionais_cj') || '{}'); if (all[prodId] && all[prodId].length) return all[prodId]; var prod = (typeof getProdById === 'function') ? getProdById(prodId) : (state.produtos || []).find(function(p){ return p.id === prodId; }); if (prod && CATS_COM_ADICIONAIS.indexOf(prod.cat) !== -1) return ADICIONAIS_DEFAULT; return all[prodId] || []; }
@@ -759,7 +841,8 @@ function salvarObsItem() {
   fecharModal('modal-obs');
   if (state.obsItemIdx >= 0) {
     // editar obs existente
-    state.mesas[state.mesaAtual].itens[state.obsItemIdx].obs = obs;
+    var _itObs = state.mesas[state.mesaAtual].itens[state.obsItemIdx];
+    if (_itObs && (_itObs.obs || '') !== obs) { _itObs.obs = obs; marcarAlterado(_itObs); }
   } else {
     // novo item
     var prod = state._pendingProd;
@@ -790,6 +873,7 @@ function mudarQty(uid, d) {
   if (idx < 0) return;
   mesa.itens[idx].qty += d;
   if (mesa.itens[idx].qty <= 0) mesa.itens.splice(idx, 1);
+  else if ((Number(mesa.itens[idx].env) || 0) > mesa.itens[idx].qty) mesa.itens[idx].env = mesa.itens[idx].qty; // unidade cancelada deixa de contar como enviada
   salvarMesas();
   renderCart();
 }
@@ -823,22 +907,32 @@ function renderCart() {
             }).join('') +
           '</div>';
         }
+        var podeAdd = !item.fracaoDe;
+        var abertoAdd = podeAdd && !!_addAbertos[uid];
+        var listaAdds = abertoAdd ? getAdicionaisDoProd(item.id) : [];
+        var envQ = Number(item.env) || 0;
+        var envTag = envQ > 0 ? ' <span class="cart-env" title="Já foi pra cozinha">🍳 ' + (envQ >= item.qty ? 'enviado' : envQ + ' enviado') + (item.alt ? ' · alterado' : '') + '</span>' : '';
         return '<div class="citem" id="citem-' + uid + '">' +
-          '<div class="citem-nome">' + item.nome + '</div>' +
+          '<div class="citem-nome">' + item.nome + envTag + '</div>' +
           addsHtml +
           (item.obs ? '<div class="citem-obs">📝 ' + item.obs + '</div>' : '') +
-          '<div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap">' +
+          '<div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap;align-items:center">' +
             '<button class="cart-obs-btn" onclick="editarObs(' + uid + ')">✏️ Obs</button>' +
+            (podeAdd ? '<label class="cart-add-chk"><input type="checkbox"' + (abertoAdd ? ' checked' : '') + ' onchange="toggleAddsItem(' + uid + ',this.checked)"> ➕ Adicionais</label>' : '') +
             (item.fracaoGrupo && _grpCart[item.fracaoGrupo] === item.fracaoDe ? '<button class="cart-obs-btn" onclick="juntarFracoes(\'' + item.fracaoGrupo + '\')" title="Desfazer a divisão">↩ Juntar partes</button>' : '') +
             '</div>' +
-            '<div style="margin-bottom:4px;background:rgba(243,156,18,.07);border-radius:6px;padding:4px 6px;border:1px solid rgba(243,156,18,.3)">' +
-            '<div style="font-size:.68em;color:#f39c12;font-weight:700;margin-bottom:3px">➕ Adicional avulso:</div>' +
+            (abertoAdd ? '<div class="cart-adds-box">' +
+            (listaAdds.length ? '<div class="cart-adds-lista">' + listaAdds.map(function(a, ai){
+              var sel = (item.adicionais || []).some(function(x){ return x.nome === a.nome; });
+              return '<button class="cart-add-chip' + (sel ? ' on' : '') + '" onclick="toggleAddItemLista(' + uid + ',' + ai + ')">' + (sel ? '✓ ' : '+ ') + a.nome + ' <b>' + parseFloat(a.preco).toFixed(2).replace('.', ',') + '</b></button>';
+            }).join('') + '</div>' : '') +
+            '<div style="font-size:.68em;color:#f39c12;font-weight:700;margin:5px 0 3px">➕ Adicional avulso:</div>' +
             '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">' +
             '<input id="add-nome-' + uid + '" type="text" placeholder="Nome (ex: Bacon)" style="flex:1;min-width:80px;padding:5px 8px;background:#222;border:1px solid rgba(243,156,18,.4);border-radius:6px;color:#fff;font-size:.8em" onkeydown="if(event.key===\'Enter\')salvarAddInline(' + uid + ')">' +
             '<input id="add-val-' + uid + '" type="number" placeholder="R$" step="0.01" min="0" style="width:64px;padding:5px 6px;background:#222;border:1px solid rgba(243,156,18,.4);border-radius:6px;color:#fff;font-size:.8em" onkeydown="if(event.key===\'Enter\')salvarAddInline(' + uid + ')">' +
             '<button onclick="salvarAddInline(' + uid + ')" style="background:#f39c12;color:#fff;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:.8em;font-weight:700">OK</button>' +
             '</div>' +
-            '</div>' +
+            '</div>' : '') +
           '<div class="citem-ctrl">' +
             (item.fracaoDe
               ? '<span class="qty-n" style="font-size:.78em;color:#aaa;min-width:0">➗ parte ' + item.fracaoN + '/' + item.fracaoDe + '</span>'
@@ -888,6 +982,7 @@ function calcTroco() {
 // ======= DIVISÃO DE PAGAMENTO =======
 function abrirDivisao() {
   var mesa = state.mesas[state.mesaAtual];
+  if (!mesa || mesa.consumo) return; // consumo proprio nao tem pagamento
   if (!mesa.itens.length) { alert('Adicione itens à mesa primeiro!'); return; }
   // marca todos como selecionados por default
   mesa.itens.forEach(function(i){ i._divSel = true; });
@@ -1057,6 +1152,8 @@ function separarUnidades() {
     c.uid = Date.now() + Math.random() + k;
     c.qty = 1;
     c._divSel = (k === 0) ? !!item._divSel : false;
+    c.env = k < (Number(item.env) || 0) ? 1 : 0; // mantem o que ja foi pra cozinha
+    if (!c.env) delete c.alt;
     novos.push(c);
   }
   mesa.itens.splice.apply(mesa.itens, [idx, 1].concat(novos));
@@ -1085,6 +1182,7 @@ function dividirItemEm(n) {
       obs: item.obs || '', adicionais: [],
       fracaoDe: n, fracaoN: k + 1, fracaoGrupo: grupo, fracaoPeso: (item.fracaoPeso || 1) / n,
       original: orig,
+      env: (Number(item.env) || 0) >= (item.qty || 1) ? 1 : 0,
       _divSel: k === 0 ? !!item._divSel : false
     };
   });
@@ -1112,6 +1210,7 @@ function juntarFracoes(grupo) {
     var deTotal = Math.round(1 / pesoTotal);
     item = { uid: Date.now() + Math.random(), id: o.id, cat: o.cat, nome: nomeComAdicionais(o) + (o.qty > 1 ? ' ×' + o.qty : '') + ' (1/' + deTotal + ')', preco: somaCent / 100, qty: 1, obs: o.obs || '', adicionais: [], fracaoDe: deTotal, fracaoN: 1, fracaoGrupo: 'g' + Date.now() + Math.floor(Math.random() * 1e6), fracaoPeso: pesoTotal, original: o, _divSel: sel };
   }
+  if (fr.every(function(i){ return (Number(i.env) || 0) >= (i.qty || 1); })) item.env = item.qty; // ja tinha ido pra cozinha
   mesa.itens = mesa.itens.filter(function(i){ return i.fracaoGrupo !== grupo; });
   mesa.itens.splice(idx, 0, item);
   _reRenderDivisao();
@@ -1133,6 +1232,7 @@ function mostrarToastRestante(valor) {
 // ======= FINALIZAR VENDA =======
 function finalizarVenda() {
   var mesa = state.mesas[state.mesaAtual];
+  if (mesa && mesa.consumo) { if (window.registrarConsumoProprio) registrarConsumoProprio(); return; } // consumo proprio nunca vira venda
   var pendente = calcPendenteMesa(mesa);
   if (mesa.itens.length === 0 && mesa.pagos.length === 0) { alert('Mesa vazia!'); return; }
   if (pendente > 0) {
@@ -1202,11 +1302,95 @@ function registrarVendaMesa(mesa) {
 }
 
 // ======= COMANDA =======
+// "Comanda" = envio pra cozinha: imprime SO o que ainda nao foi enviado (item.env = unidades ja enviadas).
+// A comanda completa (com valores) continua disponivel no botao "Comanda completa" e nao marca nada.
+var _comandaModo = 'cozinha';
 function imprimirComanda() {
   var mesa = state.mesas[state.mesaAtual];
-  var html = gerarComandaHTML(mesa, false);
-  document.getElementById('comanda-conteudo').innerHTML = html;
+  if (!mesa) return;
+  _comandaModo = 'cozinha';
+  renderComandaModal();
   abrirModal('modal-comanda');
+}
+function alternarComanda() {
+  _comandaModo = (_comandaModo === 'completa') ? 'cozinha' : 'completa';
+  renderComandaModal();
+}
+function itensNovosCozinha(mesa) {
+  var out = [];
+  (mesa.itens || []).forEach(function(i){
+    var q = Number(i.qty) || 1, env = Number(i.env) || 0;
+    if (q - env > 0) out.push({ nome: i.nome, qty: q - env, obs: i.obs || '', adicionais: i.adicionais || [] });
+    else if (i.alt) out.push({ nome: i.nome, qty: q, obs: i.obs || '', adicionais: i.adicionais || [], alt: true });
+  });
+  return out;
+}
+function gerarComandaCozinhaHTML(mesa, itens, adicional, quando, reimpressao) {
+  var hora = (quando ? new Date(quando) : new Date()).toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
+  var grp = [];
+  itens.forEach(function(it){
+    var ch = (it.alt ? 'ALT|' : '') + it.nome + '|' + (it.obs || '') + '|' + (it.adicionais || []).map(function(a){ return a.nome; }).join(',');
+    var e = grp.find(function(g){ return g._ch === ch; });
+    if (e) e.qty += it.qty; else grp.push({ _ch: ch, nome: it.nome, qty: it.qty, obs: it.obs, adicionais: it.adicionais || [], alt: it.alt });
+  });
+  return '<div class="recibo-print cozinha">' +
+    '<div class="rc-center">' + ESTAB + ' - COZINHA' + (reimpressao ? ' (REIMPRESSÃO)' : '') + '</div>' +
+    '<div class="rc-lin"><span class="rc-big">' + (mesa.consumo ? 'CONSUMO PRÓPRIO' : 'MESA ' + mesa.num) + '</span><span>' + hora + '</span></div>' +
+    (adicional ? '<div class="rc-center rc-big">** PEDIDO ADICIONAL **</div>' : '') +
+    '<hr>' +
+    grp.map(function(g){
+      return '<div class="rc-it">' + (g.alt ? 'ALTERADO: ' : '') + (Math.round(g.qty * 100) / 100) + 'x ' + g.nome +
+        (g.adicionais.length ? '<div>+ ' + g.adicionais.map(function(a){ return a.nome; }).join(', ') + '</div>' : '') +
+        (g.obs ? '<div>OBS: ' + g.obs + '</div>' : '') + '</div>';
+    }).join('') +
+    '<hr>' +
+    '</div>';
+}
+function renderComandaModal() {
+  var mesa = state.mesas[state.mesaAtual];
+  var tit = document.getElementById('comanda-titulo'), av = document.getElementById('comanda-aviso');
+  var cont = document.getElementById('comanda-conteudo'), alt = document.getElementById('btn-comanda-alternar'), imp = document.getElementById('btn-comanda-imprimir');
+  alt.style.display = '';
+  imp.style.display = '';
+  if (!mesa) return;
+  if (_comandaModo === 'completa') {
+    tit.textContent = '📄 Comanda completa';
+    av.innerHTML = '<div class="cmd-aviso">Comanda completa da mesa, com valores. Imprimir esta <b>não</b> manda nada novo pra cozinha.</div>';
+    cont.innerHTML = gerarComandaHTML(mesa, false);
+    alt.textContent = '🍳 Só itens novos';
+    imp.textContent = '🖨️ Imprimir';
+    return;
+  }
+  tit.textContent = '🍳 Enviar pra cozinha';
+  alt.textContent = '📄 Comanda completa';
+  var novos = itensNovosCozinha(mesa);
+  if (novos.length) {
+    var jaFoi = (mesa.itens || []).some(function(i){ return (Number(i.env) || 0) > 0; }) || (mesa.pagos || []).length > 0;
+    av.innerHTML = '<div class="cmd-aviso">Vai só o que ainda <b>não foi</b> pra cozinha' + (jaFoi ? ' (pedido adicional desta mesa)' : '') + '.</div>';
+    cont.innerHTML = gerarComandaCozinhaHTML(mesa, novos, jaFoi);
+    imp.textContent = '🖨️ Imprimir p/ cozinha';
+  } else if (mesa.ultimaCozinha && (mesa.itens || []).length) {
+    av.innerHTML = '<div class="cmd-aviso ok">✅ Nada novo: tudo desta mesa já foi pra cozinha. Abaixo está o <b>último envio</b>, se precisar reimprimir.</div>';
+    cont.innerHTML = gerarComandaCozinhaHTML(mesa, mesa.ultimaCozinha.itens || [], mesa.ultimaCozinha.adicional, mesa.ultimaCozinha.data, true);
+    imp.textContent = '🖨️ Reimprimir último envio';
+  } else {
+    av.innerHTML = '<div class="cmd-aviso ok">Nenhum item novo para a cozinha.</div>';
+    cont.innerHTML = '';
+    imp.style.display = 'none';
+  }
+}
+function imprimirComandaModal() {
+  var mesa = state.mesas[state.mesaAtual];
+  var novos = (_comandaModo === 'cozinha' && mesa) ? itensNovosCozinha(mesa) : [];
+  window.print();
+  if (_comandaModo === 'cozinha' && mesa && novos.length) {
+    var jaFoi = (mesa.itens || []).some(function(i){ return (Number(i.env) || 0) > 0; }) || (mesa.pagos || []).length > 0;
+    mesa.ultimaCozinha = { data: new Date().toISOString(), itens: novos, adicional: jaFoi };
+    mesa.itens.forEach(function(i){ i.env = Number(i.qty) || 1; delete i.alt; });
+    salvarMesas();
+    renderCart();
+    fecharModal('modal-comanda');
+  }
 }
 
 function gerarComandaHTML(mesa, reimpressao) {
@@ -1230,16 +1414,16 @@ return '<div class="rc-it">' + item.qty + 'x ' + item.nome + addsComanda + (item
   var total = calcTotalMesa(mesa);
   var pago = mesa.pagos.reduce(function(s,p){return s+p.valor;},0);
   var pendente = Math.max(0, total - pago);
-  return '<div class="recibo-print">' +
+  return '<div class="recibo-print cozinha">' +
     '<div class="rc-center">' + ESTAB + ' - COMANDA' + (reimpressao ? ' (REIMPRESSÃO)' : '') + '</div>' +
-    '<div class="rc-lin"><span class="rc-big">MESA ' + mesa.num + '</span><span>' + agora + '</span></div>' +
+    '<div class="rc-lin"><span class="rc-big">' + (mesa.consumo ? 'CONSUMO PRÓPRIO' : 'MESA ' + mesa.num) + '</span><span>' + agora + '</span></div>' +
     '<hr>' +
     itensHTML +
     pagosHTML +
     '<hr>' +
     (pago > 0 ? '<div class="rc-lin"><span>Total</span><span>R$ ' + total.toFixed(2).replace('.',',') + '</span></div>' +
       '<div class="rc-lin"><span>Pago</span><span>R$ ' + pago.toFixed(2).replace('.',',') + '</span></div>' : '') +
-    '<div class="rc-lin rc-big"><span>' + (pago > 0 ? 'PENDENTE' : 'TOTAL') + '</span><span>R$ ' + pendente.toFixed(2).replace('.',',') + '</span></div>' +
+    '<div class="rc-lin rc-big"><span>' + (mesa.consumo ? 'SEM COBRANÇA' : (pago > 0 ? 'PENDENTE' : 'TOTAL')) + '</span><span>R$ ' + pendente.toFixed(2).replace('.',',') + '</span></div>' +
     '</div>';
 }
 
@@ -1280,17 +1464,21 @@ function abrirModal(id) { document.getElementById(id).classList.add('show'); }
 function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // ======= ADMIN TABS =======
+var ADMIN_ABAS = ['rel','hist','prods','consumo','freezer','mauro'];
 function showAdminTab(tab) {
-  ['rel','hist','prods'].forEach(function(t){
+  ADMIN_ABAS.forEach(function(t){
     var el = document.getElementById('admin-' + t);
     if (el) el.style.display = t === tab ? 'block' : 'none';
   });
-  document.querySelectorAll('.tab').forEach(function(el,i){
-    el.classList.toggle('on', ['rel','hist','prods'][i] === tab);
+  document.querySelectorAll('#tela-admin .tab[data-tab]').forEach(function(el){
+    el.classList.toggle('on', el.getAttribute('data-tab') === tab);
   });
   if (tab === 'rel') gerarRelatorios();
   if (tab === 'hist') gerarHistorico();
   if (tab === 'prods') gerarProdutosAdmin();
+  if (tab === 'consumo' && window.gerarRelConsumo) gerarRelConsumo();
+  if (tab === 'freezer' && window.gerarRelFreezer) gerarRelFreezer();
+  if (tab === 'mauro' && window.gerarContasMauro) gerarContasMauro();
 }
 
 // ======= RELATÓRIOS =======
@@ -1793,7 +1981,8 @@ function salvarAddInline(uid) {
   if (!item) return;
   if (!item.adicionais) item.adicionais = [];
   item.adicionais.push({nome: nome, preco: preco});
-  item.preco += preco;
+  item.preco = Math.round((item.preco + preco) * 100) / 100;
+  marcarAlterado(item);
   salvarMesas();
   renderCart();
 }
@@ -1803,8 +1992,9 @@ function removerAdicionalItem(uid, aidx) {
   var item = mesa.itens.find(function(i){ return i.uid === uid; });
   if (!item || !item.adicionais) return;
   var add = item.adicionais[aidx];
-  if (add) item.preco -= parseFloat(add.preco) || 0;
+  if (add) item.preco = Math.round((item.preco - (parseFloat(add.preco) || 0)) * 100) / 100;
   item.adicionais.splice(aidx, 1);
+  marcarAlterado(item);
   salvarMesas();
   renderCart();
 }
@@ -1873,7 +2063,7 @@ function salvarCaixa(c){localStorage.setItem('opg_caixa_cj',JSON.stringify(c))}
 function abrirCaixa(){var caixa=getCaixaAtual();var stEl=document.getElementById('caixa-status');var fmEl=document.getElementById('caixa-form-abertura');var resEl=document.getElementById('caixa-resumo');var btnEl=document.getElementById('btn-acao-caixa');if(!caixa||caixa.status==='fechado'){stEl.innerHTML='<div style="color:#c0392b;font-size:1.1em;font-weight:700">CAIXA FECHADO</div>'+(caixa?'<div style="color:#888;font-size:.82em;margin-top:4px">Fechado: '+new Date(caixa.fechamento).toLocaleString('pt-BR')+'</div>':'<div style="color:#aaa;font-size:.82em">Nunca aberto</div>');fmEl.style.display='block';resEl.style.display='none';btnEl.textContent='Abrir Caixa';btnEl.style.cssText='background:#27ae60;color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-weight:700'}else{var ab=new Date(caixa.abertura);var vcs=state.vendas.filter(function(v){return new Date(v.data)>=ab});var tv=vcs.reduce(function(s,v){return s+(v.totalGeral||0)},0);var pm={};vcs.forEach(function(v){(v.pagamentos||[]).forEach(function(p){var m=p.metodo||p.tipo||'dinheiro';pm[m]=(pm[m]||0)+(p.valor||0)})});stEl.innerHTML='<div style="color:#27ae60;font-size:1.1em;font-weight:700">CAIXA ABERTO</div><div style="color:#555;font-size:.82em;margin-top:4px">Aberto: '+ab.toLocaleString('pt-BR')+'</div>';fmEl.style.display='none';resEl.style.display='block';resEl.innerHTML='<b>Fundo inicial:</b> R$ '+(caixa.valorInicial||0).toFixed(2).replace('.',',')+' &nbsp;|&nbsp; <b>Vendas:</b> '+vcs.length+' &nbsp;|&nbsp; <b>Total vendido:</b> R$ '+tv.toFixed(2).replace('.',',')+(Object.entries(pm).length?'<br><span style="color:#666;font-size:.9em">'+Object.entries(pm).map(function(e){return e[0]+': R$ '+e[1].toFixed(2).replace('.',',')}).join(' | ')+'</span>':'')+'<br><br><b style="color:#27ae60;font-size:1.05em">Total em caixa: R$ '+(parseFloat(caixa.valorInicial||0)+tv).toFixed(2).replace('.',',')+'</b>';btnEl.textContent='Fechar Caixa';btnEl.style.cssText='background:#c0392b;color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-weight:700'}abrirModal('modal-caixa')}
 function acaoCaixa(){var caixa=getCaixaAtual();if(!caixa||caixa.status==='fechado'){var val=parseFloat(document.getElementById('caixa-valor-inicial').value)||0;salvarCaixa({status:'aberto',abertura:new Date().toISOString(),valorInicial:val,fechamento:null});document.getElementById('caixa-valor-inicial').value='';abrirCaixa()}else{if(!confirm('Confirma o fechamento do caixa?'))return;caixa.status='fechado';caixa.fechamento=new Date().toISOString();salvarCaixa(caixa);abrirCaixa()}}
 function abrirReimpressao(){var lista=document.getElementById('lista-reimpressao');var vendas=state.vendas.slice().reverse();if(!vendas.length){lista.innerHTML='<p style="text-align:center;color:#888;padding:24px">Nenhuma venda registrada</p>'}else{lista.innerHTML=vendas.map(function(v){var d=new Date(v.data);var ds=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});var pg=(v.pagamentos||[]).map(function(p){return(p.metodo||p.tipo||'din')+' R$'+(p.valor||0).toFixed(2).replace('.',',')}).join(' / ');return'<div style="padding:12px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:700;font-size:.9em">Pedido #'+v.id+' - Mesa '+v.mesa+'</div><div style="color:#666;font-size:.8em">'+ds+'</div><div style="color:#aaa;font-size:.78em">'+pg+'</div></div><div style="text-align:right"><div style="font-weight:700;color:#27ae60">R$ '+(v.totalGeral||0).toFixed(2).replace('.',',')+'</div><button onclick="reimprimirVenda('+v.id+')" style="margin-top:5px;background:#c0392b;color:#fff;border:none;border-radius:5px;padding:5px 10px;cursor:pointer;font-size:.8em">Reimprimir</button></div></div>'}).join('')}abrirModal('modal-reimpressao')}
-function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===id});if(!v)return;document.getElementById('comanda-conteudo').innerHTML=gerarComandaHTML({num:v.mesa,itens:v.todosItens||[],pagos:v.pagamentos||[]},true);fecharModal('modal-reimpressao');abrirModal('modal-comanda')}
+function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===id});if(!v)return;_comandaModo='reimpressao';document.getElementById('comanda-titulo').textContent='🗂 Reimprimir comanda';document.getElementById('comanda-aviso').innerHTML='';document.getElementById('btn-comanda-alternar').style.display='none';var _bi=document.getElementById('btn-comanda-imprimir');_bi.style.display='';_bi.textContent='🖨️ Imprimir';document.getElementById('comanda-conteudo').innerHTML=gerarComandaHTML({num:v.mesa,itens:v.todosItens||[],pagos:v.pagamentos||[]},true);fecharModal('modal-reimpressao');abrirModal('modal-comanda')}
 </script>
 
 <div class="modal" id="modal-relatorios"><div class="mbox" style="max-width:640px;max-height:90vh;overflow-y:auto"><h3 style="margin-bottom:12px">Relatorios de Vendas</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px"><button onclick="filtrarRelatorio('hoje')" style="background:#c0392b;color:#fff;border:none;border-radius:7px;padding:8px 14px;cursor:pointer" id="rbtn-hoje">Hoje</button><button onclick="filtrarRelatorio('semana')" style="background:#333;color:#fff;border:none;border-radius:7px;padding:8px 14px;cursor:pointer" id="rbtn-semana">Esta Semana</button><button onclick="filtrarRelatorio('mes')" style="background:#333;color:#fff;border:none;border-radius:7px;padding:8px 14px;cursor:pointer" id="rbtn-mes">Este Mes</button><button onclick="filtrarRelatorio('ano')" style="background:#333;color:#fff;border:none;border-radius:7px;padding:8px 14px;cursor:pointer" id="rbtn-ano">Este Ano</button><button onclick="filtrarRelatorio('tudo')" style="background:#333;color:#fff;border:none;border-radius:7px;padding:8px 14px;cursor:pointer" id="rbtn-tudo">Tudo</button></div><div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap"><span style="color:#888;font-size:.85em">Periodo:</span><input type="date" id="rel-data-ini" style="background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:5px 8px;font-size:.85em"><span style="color:#888">ate</span><input type="date" id="rel-data-fim" style="background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:5px 8px;font-size:.85em"><button onclick="filtrarRelatorio('custom')" style="background:#c0392b;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:.85em">Buscar</button></div><div id="rel-resumo" style="background:#f5f5f5;border-radius:8px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div><div id="rel-lista" style="max-height:320px;overflow-y:auto;border:1px solid #eee;border-radius:8px"></div><div class="mbtns" style="margin-top:14px"><button class="btn btn-gray btn-sm" onclick="fecharModal('modal-relatorios')">Fechar</button></div></div></div>
@@ -2169,7 +2359,7 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
 <!-- AVISO DE ATUALIZACAO: correcao nome duplicado na comanda/impressao -->
 <script>
 (function(){
-  var VERSAO = 'dividir-item-2026-10';
+  var VERSAO = 'consumo-freezer-2026-11';
   var CHAVE = 'pdv_aviso_visto';
   function mostrarAviso(){
     try {
@@ -2183,8 +2373,12 @@ function reimprimirVenda(id){var v=state.vendas.find(function(x){return x.id===i
       box.innerHTML =
         '<div style="font-size:44px;margin-bottom:6px">🔄</div>' +
         '<h2 style="color:#c0392b;margin:0 0 10px;font-size:1.25em">Sistema Atualizado</h2>' +
-        '<p style="color:#555;font-size:.95em;margin:0 0 8px;line-height:1.5">Agora dá para dividir um item entre pessoas (ex.: uma Coca para 3 amigos).</p>' +
-        '<p style="color:#888;font-size:.85em;margin:0 0 18px;line-height:1.5">Em <b>💳 Dividir</b>, toque no <b>➗</b> ao lado do item, escolha entre quantas pessoas, e cada parte pode ser paga separadamente. Se errar, <b>↩</b> junta de volta.</p>';
+        '<div style="color:#444;font-size:.9em;margin:0 0 18px;line-height:1.55;text-align:left">' +
+          '<div style="margin-bottom:7px">🍳 <b>Comanda:</b> agora vai pra cozinha <b>só o que é novo</b> na mesa (pedido adicional).</div>' +
+          '<div style="margin-bottom:7px">➕ <b>Adicionais:</b> tocar no pastel já coloca no pedido. Se o cliente quiser adicional, marque a caixa <b>Adicionais</b> no item.</div>' +
+          '<div style="margin-bottom:7px">🍽️ <b>Consumo Próprio:</b> card novo na tela inicial. Funciona igual mesa, mas não entra no faturamento.</div>' +
+          '<div>🧊 <b>FREEZER:</b> botão no topo da tela inicial para lançar os pastéis que entram no freezer. As vendas dão baixa sozinhas.</div>' +
+        '</div>';
       var btn = document.createElement('button');
       btn.textContent = 'Entendi';
       btn.style.cssText = 'background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;border:none;padding:14px 20px;border-radius:12px;font-weight:700;font-size:1em;cursor:pointer;width:100%';
@@ -2491,6 +2685,826 @@ window.buscarCep=async function(){try{const el=document.getElementById('cli-cep'
   setInterval(atualizar,1500);
   document.addEventListener('DOMContentLoaded',atualizar);
   setTimeout(atualizar,800);
+})();
+</script>
+
+<!-- ===== CONSUMO PROPRIO + FREEZER + CONTAS DO MAURO ===== -->
+<div class="modal" id="modal-consumo-ok">
+  <div class="mbox" style="max-width:420px">
+    <h3 class="no-print">🍽️ Consumo registrado</h3>
+    <div id="consumo-ok-conteudo"></div>
+    <div class="mbtns no-print">
+      <button class="btn btn-gray btn-sm" onclick="fecharModal('modal-consumo-ok');irMesas()">🏠 Mesas</button>
+      <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal-print-rel">
+  <div class="mbox" style="max-width:560px">
+    <h3 class="no-print" id="print-rel-titulo">🖨️ Imprimir relatório</h3>
+    <div id="print-rel-conteudo"></div>
+    <div class="mbtns no-print">
+      <button class="btn btn-gray btn-sm" onclick="fecharModal('modal-print-rel')">Fechar</button>
+      <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</div>
+<style>
+.fz-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.fz-card{background:#fff;border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(41,128,185,.25)}
+.fz-card .l{font-size:.75em;color:#888}
+.fz-card .v{font-size:1.5em;font-weight:800;color:#2980b9}
+.fz-modos{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.fz-modo{flex:1;min-width:160px;padding:11px 10px;border-radius:10px;border:2px solid rgba(41,128,185,.3);background:#fff;font-weight:800;cursor:pointer;color:#2980b9;font-size:.9em}
+.fz-modo.on{background:#2980b9;color:#fff;border-color:#2980b9}
+.fz-modo.baixa{color:#c0392b;border-color:rgba(192,57,43,.3)}
+.fz-modo.baixa.on{background:#c0392b;color:#fff;border-color:#c0392b}
+.fz-info{font-size:.82em;color:#555;background:#eef6fc;border:1px solid #c9e2f3;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.4}
+.fz-info.baixa{background:#fdf0ee;border-color:#f3c9c2}
+.fz-filtros{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px;align-items:center}
+.fz-busca{width:100%;padding:10px 12px;border:2px solid rgba(41,128,185,.3);border-radius:10px;font-size:.92em;color:#222;background:#fff}
+.fz-cat{margin-bottom:14px}
+.fz-cat h4{color:#2980b9;font-size:.9em;margin:0 0 6px;border-bottom:1px solid rgba(41,128,185,.2);padding-bottom:4px}
+.fz-row{display:flex;align-items:center;gap:8px;background:#fff;border-radius:9px;padding:7px 9px;margin-bottom:5px;border:1px solid #e6e6e6}
+.fz-row.tem{border-color:rgba(41,128,185,.6);background:#eef6fc}
+.fz-nome{flex:1;font-size:.86em;font-weight:600;color:#333;line-height:1.25}
+.fz-num{color:#999;font-size:.85em;font-weight:700;margin-right:4px}
+.fz-saldo{min-width:62px;text-align:center;font-weight:800;font-size:.95em;color:#2980b9;line-height:1.1}
+.fz-saldo small{display:block;font-size:.6em;color:#999;font-weight:600}
+.fz-saldo.zero{color:#bbb}
+.fz-saldo.neg{color:#c0392b}
+.fz-ctrl{display:flex;align-items:center;gap:4px}
+.fz-ctrl button{width:32px;height:32px;border:none;border-radius:8px;font-weight:800;font-size:1.05em;cursor:pointer;color:#fff;background:#2980b9}
+.fz-ctrl button.m{background:#95a5a6}
+.fz-ctrl input{width:56px;padding:6px 4px;text-align:center;border:2px solid rgba(41,128,185,.35);border-radius:8px;font-size:.95em;font-weight:700;color:#222;background:#fff}
+.fz-rodape{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:3px solid #2980b9;box-shadow:0 -6px 20px rgba(0,0,0,.15);padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;z-index:50}
+.fz-rodape.baixa{border-top-color:#c0392b}
+.fz-rodape .resumo{font-weight:700;color:#333;font-size:.9em}
+.fz-rodape select{padding:8px;border-radius:8px;border:2px solid rgba(192,57,43,.3);font-size:.88em;color:#222;background:#fff}
+.fz-hist{margin-top:18px}
+.fz-hist .it{background:#fff;border:1px solid #eee;border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:.8em;color:#444}
+</style>
+<script>
+/* =====================================================================
+   CONSUMO PROPRIO (sem financeiro) · CONTAS PESSOAIS DO MAURO · FREEZER
+   - Consumo Proprio: card na tela inicial, funciona igual mesa, mas ao
+     registrar NAO vira venda (nao entra em faturamento, caixa nem nuvem de vendas).
+   - Contas do Mauro: aba no Gerencial, registro separado com relatorio do mes.
+   - Freezer: estoque virtual dos pasteis; vendas e consumo dao baixa sozinhos.
+   Os registros ficam salvos neste aparelho. Consumo e Contas do Mauro tambem
+   tentam guardar copia no Firebase (so funciona se as Regras liberarem).
+   ===================================================================== */
+(function(){
+  var NOME_LOJA = (typeof ESTAB !== 'undefined' && ESTAB) ? ESTAB : 'Candeias Jr';
+
+  /* ---------- utilitarios ---------- */
+  function brl(n){ return 'R$ ' + (Number(n) || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+  function num2(n){ return (Math.round((Number(n) || 0) * 100) / 100).toFixed(2).replace('.', ','); }
+  function fmtQ(n){ n = Math.round((Number(n) || 0) * 100) / 100; return String(n).replace('.', ','); }
+  function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function lerLS(k, def){ try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? def : v; } catch(e){ return def; } }
+  function gravarLS(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ alert('Não consegui salvar neste aparelho (memória do navegador cheia?).'); return false; } }
+  function novoId(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function pad(n){ return ('0' + n).slice(-2); }
+  function ymd(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function chaveMes(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1); }
+  function somaMes(k, n){ var p = String(k).split('-'); return chaveMes(new Date(Number(p[0]), Number(p[1]) - 1 + n, 1)); }
+  function inicioMes(k){ var p = String(k).split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, 1); }
+  function diaData(s){ var p = String(s).split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+  var MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  function nomeMes(k){ var p = String(k).split('-'); return (MESES[Number(p[1]) - 1] || p[1]) + ' de ' + p[0]; }
+  function diaBR(s){ var p = String(s || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : String(s || ''); }
+  function semana(s){ return ['dom','seg','ter','qua','qui','sex','sáb'][diaData(s).getDay()] || ''; }
+  function dataHora(iso){ var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'}); }
+  function lerValor(s){
+    s = String(s || '').replace(/[R$\s]/g, '');
+    if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+    else if ((s.match(/\./g) || []).length > 1 || /^\d{1,3}\.\d{3}$/.test(s)) s = s.replace(/\./g, '');
+    var n = parseFloat(s); return isNaN(n) ? NaN : Math.round(n * 100) / 100;
+  }
+  function r4(n){ return Math.round(n * 10000) / 10000; }
+  function qtdUnid(i){ return i.fracaoDe ? (i.fracaoPeso || 1 / i.fracaoDe) * ((i.original && i.original.qty) || 1) : (Number(i.qty) || 1); }
+  function card(l, v, cor){ return '<div class="rel-card"><div class="rl">' + l + '</div><div class="rv"' + (cor ? ' style="color:' + cor + '"' : '') + '>' + v + '</div></div>'; }
+  function tabela(cab, linhas, alinhar, rodape){
+    alinhar = alinhar || [];
+    function c(i){ return alinhar[i] === 'r' ? ' class="r"' : ''; }
+    return '<div class="cp-tab-wrap"><table><thead><tr>' + cab.map(function(h, i){ return '<th' + c(i) + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      linhas.map(function(l){ return '<tr>' + l.map(function(v, i){ return '<td' + c(i) + '>' + v + '</td>'; }).join('') + '</tr>'; }).join('') +
+      (rodape ? '<tr style="font-weight:800;background:#fafafa">' + rodape.map(function(v, i){ return '<td' + c(i) + '>' + v + '</td>'; }).join('') + '</tr>' : '') +
+      '</tbody></table></div>';
+  }
+  function botaoExcluir(fn, id){ return /^[\w-]+$/.test(String(id || '')) ? '<button class="btn btn-red btn-sm" title="Excluir" onclick="' + fn + '(\'' + id + '\')">🗑️</button>' : ''; }
+  function aviso(msg, cor){
+    var velho = document.getElementById('aviso-rapido'); if (velho) velho.remove();
+    var t = document.createElement('div');
+    t.id = 'aviso-rapido';
+    t.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:' + (cor || '#1e8449') + ';color:#fff;padding:12px 20px;border-radius:12px;font-weight:700;z-index:100001;box-shadow:0 8px 25px rgba(0,0,0,.35);max-width:90vw;text-align:center';
+    t.textContent = msg; document.body.appendChild(t);
+    setTimeout(function(){ if (t.parentNode) t.remove(); }, 2800);
+  }
+  function abrirPrint(titulo, html){
+    document.getElementById('print-rel-titulo').textContent = '🖨️ ' + titulo;
+    document.getElementById('print-rel-conteudo').innerHTML = html;
+    abrirModal('modal-print-rel');
+  }
+  function baixarCSV(nome, linhas){
+    var csv = '﻿' + linhas.map(function(l){ return l.map(function(v){ v = String(v == null ? '' : v); return /[;"\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(';'); }).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'}));
+    a.download = nome; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  function barraMes(pref, mes){
+    return '<div class="cp-barra no-print">' +
+      '<button class="tab" title="Mês anterior" onclick="' + pref + 'Mes(-1)">◀</button>' +
+      '<input type="month" class="cp-mes" id="' + pref + '-mes" value="' + mes + '" onchange="' + pref + 'Mes(0,this.value)">' +
+      '<button class="tab" title="Próximo mês" onclick="' + pref + 'Mes(1)">▶</button>' +
+      '<button class="tab" onclick="' + pref + 'Mes(0,\'' + chaveMes(new Date()) + '\')">Mês atual</button>' +
+      '<span style="flex:1"></span>' +
+      '<button class="btn btn-gray btn-sm" onclick="' + pref + 'Imprimir()">🖨️ Imprimir</button>' +
+      '<button class="btn btn-green btn-sm" onclick="' + pref + 'Planilha()">⬇️ Baixar planilha</button>' +
+    '</div>';
+  }
+  function cabecalhoPrint(titulo, mes, sub){
+    return '<div class="rc-center rc-big">' + esc(NOME_LOJA) + '</div>' +
+      '<div class="rc-center">' + titulo + '</div>' +
+      '<div class="rc-center">' + nomeMes(mes).toUpperCase() + '</div>' +
+      (sub ? '<div class="rc-center" style="font-weight:400">' + sub + '</div>' : '') + '<hr>';
+  }
+  function rodapePrint(){ return '<hr><div class="rc-center" style="font-weight:400">Impresso em ' + dataHora(new Date().toISOString()) + '</div>'; }
+
+  /* ---------- registros com copia na nuvem (quando as Regras do Firebase liberarem) ---------- */
+  function criarArquivo(colecao, chave){
+    var CH_DEL = chave + '_excluidos';
+    var api = { nuvem: null, status: '' };
+    function fb(){ var f = window._pdvFirestore; return (f && f.db && f.setDoc && f.doc && f.getDocs) ? f : null; }
+    function erroTxt(e){ return (e && (e.code || e.message)) || String(e); }
+    function enviar(r){
+      var f = fb(); if (!f) return;
+      f.setDoc(f.doc(f.db, colecao, r.id), r).catch(function(e){ console.warn('[' + colecao + '] nuvem:', erroTxt(e)); });
+    }
+    api.locais = function(){ return lerLS(chave, []); };
+    api.todos = function(){
+      var del = lerLS(CH_DEL, {}), mapa = {};
+      (api.nuvem || []).forEach(function(r){ if (r && r.id && !del[r.id]) mapa[r.id] = r; });
+      api.locais().forEach(function(r){ if (r && r.id && !del[r.id]) mapa[r.id] = r; });
+      return Object.keys(mapa).map(function(k){ return mapa[k]; });
+    };
+    api.salvar = function(r){
+      r = JSON.parse(JSON.stringify(r));
+      var l = api.locais(); l.push(r);
+      if (!gravarLS(chave, l)) return null;
+      enviar(r);
+      return r;
+    };
+    api.excluir = function(id){
+      gravarLS(chave, api.locais().filter(function(r){ return r.id !== id; }));
+      var del = lerLS(CH_DEL, {}); del[id] = Date.now(); gravarLS(CH_DEL, del);
+      if (api.nuvem) api.nuvem = api.nuvem.filter(function(r){ return r.id !== id; });
+      var f = fb(); if (f && f.deleteDoc) f.deleteDoc(f.doc(f.db, colecao, id)).catch(function(e){ console.warn('[' + colecao + '] excluir nuvem:', erroTxt(e)); });
+    };
+    api.carregar = function(cb){
+      var tent = 0;
+      api.status = '☁️ Conferindo a nuvem...'; cb();
+      (function esperar(){
+        var f = fb();
+        if (!f) { if (++tent < 20) return setTimeout(esperar, 300); api.status = '💾 Sem conexão com a nuvem: mostrando o que está salvo neste aparelho.'; return cb(); }
+        f.getDocs(f.collection(f.db, colecao)).then(function(snap){
+          var lista = [], ids = {};
+          snap.forEach(function(d){ var o = d.data() || {}; if (!o.id) o.id = d.id; lista.push(o); ids[o.id] = 1; });
+          api.nuvem = lista;
+          var del = lerLS(CH_DEL, {});
+          var faltam = api.locais().filter(function(r){ return r && r.id && !ids[r.id] && !del[r.id]; });
+          faltam.forEach(enviar);
+          Object.keys(del).forEach(function(id){ if (ids[id] && f.deleteDoc) f.deleteDoc(f.doc(f.db, colecao, id)).catch(function(){}); });
+          api.status = '☁️ Nuvem conectada: ' + api.todos().length + ' registro(s)' + (faltam.length ? ' (enviando ' + faltam.length + ' deste aparelho)' : '') + '.';
+          cb();
+        }).catch(function(e){
+          console.warn('[' + colecao + '] leitura nuvem:', erroTxt(e));
+          api.status = /permission/i.test(erroTxt(e))
+            ? '💾 Salvo neste aparelho. (Cópia na nuvem desligada: falta liberar esta área nas Regras do Firebase.)'
+            : '💾 Não consegui ler a nuvem agora: mostrando o que está salvo neste aparelho.';
+          cb();
+        });
+      })();
+    };
+    return api;
+  }
+  var arqConsumo = criarArquivo('pdv_consumo_candeiasjr', 'opg_consumo_cj');
+  var arqMauro = criarArquivo('contas_mauro_candeiasjr', 'opg_contas_mauro_cj');
+
+  /* ================= CONSUMO PROPRIO ================= */
+  // A conta do consumo fica em state.mesas.cp (propriedade nomeada: nao entra na lista de mesas,
+  // nem no contador de mesas abertas) e e salva na chave propria abaixo.
+  var CH_CONTA = 'opg_consumo_aberto_cj';
+  function contaConsumo(){
+    var ms = window.state && state.mesas; if (!ms) return null;
+    if (!ms.cp) {
+      var c = lerLS(CH_CONTA, null);
+      ms.cp = (c && Array.isArray(c.itens)) ? c : { num: 'CP', itens: [], pagos: [] };
+      ms.cp.consumo = true;
+      if (!Array.isArray(ms.cp.pagos)) ms.cp.pagos = [];
+    }
+    return ms.cp;
+  }
+  var _salvarMesasAnt = window.salvarMesas;
+  window.salvarMesas = function(){
+    var ms = window.state && state.mesas;
+    if (ms) {
+      ms.forEach(function(m){ if (m && !(m.itens || []).length && !(m.pagos || []).length) delete m.ultimaCozinha; });
+      if (ms.cp && !(ms.cp.itens || []).length) delete ms.cp.ultimaCozinha;
+    }
+    var r = _salvarMesasAnt.apply(this, arguments);
+    if (ms && ms.cp) gravarLS(CH_CONTA, ms.cp);
+    return r;
+  };
+  function modoConsumo(on){
+    var t = document.getElementById('tela-pdv'); if (t) t.classList.toggle('modo-consumo', !!on);
+    var b = document.getElementById('btn-deixar-aberto'); if (b) b.textContent = on ? '📋 DEIXAR EM ABERTO (registrar depois)' : '📋 DEIXAR EM ABERTO (pagar depois)';
+    var l = document.getElementById('lbl-total'); if (l) l.textContent = on ? 'VALOR (sem cobrança)' : 'TOTAL';
+  }
+  var _abrirMesaAnt = window.abrirMesa;
+  window.abrirMesa = function(){ modoConsumo(false); return _abrirMesaAnt.apply(this, arguments); };
+  window.abrirConsumoProprio = function(){
+    var c = contaConsumo(); if (!c) return;
+    state.mesaAtual = 'cp';
+    window._clienteAtual = null;
+    modoConsumo(true);
+    document.getElementById('pdv-mesa-label').textContent = '🍽️ CONSUMO PRÓPRIO';
+    document.getElementById('cart-mesa-label').textContent = 'Consumo Próprio';
+    mostrarTela('tela-pdv');
+    renderFiltros(); renderProds(); renderCart();
+  };
+  var _renderMesasAnt = window.renderMesas;
+  window.renderMesas = function(){
+    var r = _renderMesasAnt.apply(this, arguments);
+    var grid = document.getElementById('mesas-grid'), c = contaConsumo();
+    if (!grid || !c) return r;
+    var ex = document.getElementById('card-consumo'); if (ex) ex.remove();
+    var aberto = c.itens.length > 0;
+    var n = c.itens.reduce(function(s, i){ return s + (Number(i.qty) || 1); }, 0);
+    var tot = c.itens.reduce(function(s, i){ return s + (Number(i.preco) || 0) * (Number(i.qty) || 1); }, 0);
+    grid.insertAdjacentHTML('beforeend',
+      '<div class="mesa-card consumo' + (aberto ? ' consumo-aberto' : '') + '" id="card-consumo" onclick="abrirConsumoProprio()">' +
+        (aberto ? '<div class="mesa-itens-badge">' + fmtQ(n) + '</div>' : '') +
+        '<div class="mesa-icon">🍽️</div>' +
+        '<div class="mesa-num">Consumo Próprio</div>' +
+        '<div class="mesa-status">' + (aberto ? 'Em uso' : 'Sem cobrança') + '</div>' +
+        (aberto ? '<div class="mesa-total">' + brl(tot) + ' · não cobra</div>' : '') +
+      '</div>');
+    return r;
+  };
+  function agrupar(itens){
+    var g = [];
+    (itens || []).forEach(function(i){
+      var adds = (i.adicionais || []).map(function(a){ return a.nome; }).join(', ');
+      var ch = i.nome + '|' + i.preco + '|' + (i.obs || '') + '|' + adds;
+      var e = g.find(function(x){ return x._ch === ch; });
+      if (e) e.qty += Number(i.qty) || 1; else g.push({ _ch: ch, nome: i.nome, preco: Number(i.preco) || 0, qty: Number(i.qty) || 1, obs: i.obs || '', adds: adds });
+    });
+    return g;
+  }
+  function htmlComprovanteConsumo(r){
+    return '<div class="recibo-print">' +
+      '<div class="rc-center rc-big">' + esc(NOME_LOJA) + '</div>' +
+      '<div class="rc-center">CONSUMO PRÓPRIO</div>' +
+      '<div class="rc-lin"><span>Registrado</span><span>' + dataHora(r.data) + '</span></div><hr>' +
+      agrupar(r.itens).map(function(i){ return '<div class="rc-lin"><div class="rc-it">' + fmtQ(i.qty) + 'x ' + esc(i.nome) + (i.adds ? '<div>+ ' + esc(i.adds) + '</div>' : '') + (i.obs ? '<div>OBS: ' + esc(i.obs) + '</div>' : '') + '</div><div>' + num2(i.preco * i.qty) + '</div></div>'; }).join('') +
+      '<hr><div class="rc-lin rc-big"><span>VALOR</span><span>' + brl(r.total) + '</span></div>' +
+      '<div class="rc-center">SEM COBRANÇA - não entra no faturamento</div></div>';
+  }
+  window.registrarConsumoProprio = function(){
+    var c = contaConsumo(); if (!c) return;
+    if (!c.itens.length) { alert('Adicione os itens consumidos antes de registrar.'); return; }
+    var itens = c.itens.map(function(i){
+      return { id: i.id, nome: i.nome, cat: i.cat || '', preco: Math.round((Number(i.preco) || 0) * 100) / 100, qty: Number(i.qty) || 1, obs: i.obs || '',
+               adicionais: (i.adicionais || []).map(function(a){ return { nome: a.nome, preco: Number(a.preco) || 0 }; }) };
+    });
+    var total = itens.reduce(function(s, i){ return s + i.preco * i.qty; }, 0);
+    var rec = arqConsumo.salvar({ id: novoId('cp'), data: new Date().toISOString(), estab: NOME_LOJA, itens: itens, total: Math.round(total * 100) / 100 });
+    if (!rec) return;
+    if (window.freezerBaixaAuto) freezerBaixaAuto('c', c.itens);
+    c.itens = []; c.pagos = [];
+    salvarMesas();
+    renderMesas();
+    document.getElementById('consumo-ok-conteudo').innerHTML = htmlComprovanteConsumo(rec);
+    abrirModal('modal-consumo-ok');
+  };
+
+  /* ----- relatorio do Consumo Proprio (Gerencial) ----- */
+  var cpMesAtual = null;
+  function consumosDoMes(k){
+    return arqConsumo.todos().filter(function(r){ var d = new Date(r.data); return !isNaN(d) && chaveMes(d) === k; })
+      .sort(function(a, b){ return new Date(a.data) - new Date(b.data); });
+  }
+  function resumoConsumo(lista){
+    var prods = {}, dias = {}, itens = 0, total = 0;
+    lista.forEach(function(r){
+      var dk = ymd(new Date(r.data));
+      var d = dias[dk] || (dias[dk] = { dia: dk, regs: 0, itens: 0, valor: 0 });
+      d.regs++;
+      (r.itens || []).forEach(function(i){
+        var q = Number(i.qty) || 1, v = (Number(i.preco) || 0) * q;
+        var p = prods[i.nome] || (prods[i.nome] = { nome: i.nome, cat: i.cat || '', qty: 0, valor: 0 });
+        p.qty += q; p.valor += v; d.itens += q; d.valor += v; itens += q; total += v;
+      });
+    });
+    return {
+      produtos: Object.keys(prods).map(function(k){ return prods[k]; }).sort(function(a, b){ return b.qty - a.qty || b.valor - a.valor; }),
+      dias: Object.keys(dias).sort().map(function(k){ return dias[k]; }),
+      regs: lista.length, itens: itens, total: total
+    };
+  }
+  window.gerarRelConsumo = function(){
+    var el = document.getElementById('admin-consumo'); if (!el) return;
+    if (!cpMesAtual) cpMesAtual = chaveMes(new Date());
+    el.innerHTML = '<div class="cp-topo"><h3 style="color:#16a085;margin:0">🍽️ Consumo Próprio</h3>' +
+      '<div class="cp-sub">O que a casa consumiu, lançado pelo card <b>Consumo Próprio</b> da tela inicial. Não entra no faturamento nem no caixa; os valores são pelo preço do cardápio.</div></div>' +
+      barraMes('cp', cpMesAtual) +
+      '<div id="cp-status" class="no-print" style="font-size:.8em;color:#888;margin:4px 0 10px"></div>' +
+      '<div id="cp-conteudo"></div>';
+    arqConsumo.carregar(atualizarRelConsumo);
+  };
+  function atualizarRelConsumo(){
+    var st = document.getElementById('cp-status'); if (st) st.textContent = arqConsumo.status;
+    var el = document.getElementById('cp-conteudo'); if (!el) return;
+    var lista = consumosDoMes(cpMesAtual), r = resumoConsumo(lista);
+    if (!lista.length) { el.innerHTML = '<div class="empty"><div class="ei">🍽️</div><p>Nenhum consumo próprio em ' + nomeMes(cpMesAtual) + '.</p></div>'; return; }
+    el.innerHTML = '<div class="rel-grid">' + card('Lançamentos', r.regs) + card('Itens consumidos', fmtQ(r.itens)) + card('Valor (preço do cardápio)', brl(r.total), '#16a085') + '</div>' +
+      '<h4 class="cp-h4">🏆 Por produto</h4>' +
+      tabela(['Produto', 'Qtd', 'Valor'], r.produtos.map(function(p){ return [esc(p.nome) + (p.cat ? ' <small style="color:#999">' + esc(p.cat) + '</small>' : ''), fmtQ(p.qty), brl(p.valor)]; }), [0, 'r', 'r'], ['TOTAL', fmtQ(r.itens), brl(r.total)]) +
+      '<h4 class="cp-h4">📅 Por dia</h4>' +
+      tabela(['Dia', 'Lançamentos', 'Itens', 'Valor'], r.dias.map(function(d){ return [diaBR(d.dia) + ' <small style="color:#999">' + semana(d.dia) + '</small>', d.regs, fmtQ(d.itens), brl(d.valor)]; }), [0, 'r', 'r', 'r']) +
+      '<h4 class="cp-h4">🧾 Lançamentos do mês</h4>' +
+      tabela(['Data/hora', 'Itens', 'Valor', ''], lista.slice().reverse().map(function(x){
+        return [dataHora(x.data), esc(agrupar(x.itens).map(function(i){ return fmtQ(i.qty) + 'x ' + i.nome + (i.adds ? ' (+' + i.adds + ')' : ''); }).join(', ')), brl(x.total), botaoExcluir('cpExcluir', x.id)];
+      }), [0, 0, 'r', 'r']);
+  }
+  window.cpMes = function(delta, valor){ cpMesAtual = valor || somaMes(cpMesAtual, delta || 0); var i = document.getElementById('cp-mes'); if (i) i.value = cpMesAtual; atualizarRelConsumo(); };
+  window.cpExcluir = function(id){
+    var r = arqConsumo.todos().find(function(x){ return x.id === id; }); if (!r) return;
+    if (!confirm('Excluir o consumo de ' + dataHora(r.data) + ' (' + brl(r.total) + ')?\n\nNão dá para desfazer.')) return;
+    arqConsumo.excluir(id); atualizarRelConsumo();
+  };
+  window.cpImprimir = function(){
+    var lista = consumosDoMes(cpMesAtual); if (!lista.length) { alert('Nenhum consumo próprio em ' + nomeMes(cpMesAtual) + '.'); return; }
+    var r = resumoConsumo(lista);
+    abrirPrint('Consumo Próprio', '<div class="recibo-print">' + cabecalhoPrint('RELATÓRIO DE CONSUMO PRÓPRIO', cpMesAtual, 'Sem cobrança - não entra no faturamento') +
+      '<div class="rc-lin"><span>Lançamentos</span><span>' + r.regs + '</span></div>' +
+      '<div class="rc-lin"><span>Itens consumidos</span><span>' + fmtQ(r.itens) + '</span></div>' +
+      '<div class="rc-lin rc-big"><span>VALOR</span><span>' + brl(r.total) + '</span></div>' +
+      '<hr><div class="rc-bold">POR PRODUTO</div>' +
+      r.produtos.map(function(p){ return '<div class="rc-lin"><div class="rc-it">' + fmtQ(p.qty) + 'x ' + esc(p.nome) + '</div><div>' + num2(p.valor) + '</div></div>'; }).join('') +
+      '<hr><div class="rc-bold">POR DIA</div>' +
+      r.dias.map(function(d){ return '<div class="rc-lin"><span>' + diaBR(d.dia) + ' - ' + fmtQ(d.itens) + ' itens</span><span>' + num2(d.valor) + '</span></div>'; }).join('') +
+      rodapePrint() + '</div>');
+  };
+  window.cpPlanilha = function(){
+    var lista = consumosDoMes(cpMesAtual); if (!lista.length) { alert('Nenhum consumo próprio em ' + nomeMes(cpMesAtual) + '.'); return; }
+    var L = [['Data', 'Hora', 'Produto', 'Categoria', 'Qtd', 'Valor unit. (R$)', 'Valor total (R$)', 'Adicionais', 'Obs']];
+    lista.forEach(function(x){
+      var d = new Date(x.data);
+      (x.itens || []).forEach(function(i){
+        var q = Number(i.qty) || 1, p = Number(i.preco) || 0;
+        L.push([d.toLocaleDateString('pt-BR'), d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}), i.nome, i.cat || '', fmtQ(q), num2(p), num2(p * q), (i.adicionais || []).map(function(a){ return a.nome; }).join(', '), i.obs || '']);
+      });
+    });
+    var r = resumoConsumo(lista);
+    L.push([]); L.push(['TOTAL ' + nomeMes(cpMesAtual).toUpperCase(), '', '', '', fmtQ(r.itens), '', num2(r.total), '', '']);
+    baixarCSV('consumo-proprio-' + cpMesAtual + '.csv', L);
+  };
+
+  /* ================= CONTAS PESSOAIS DO MAURO (Gerencial) ================= */
+  var CONTAS_MAURO = ['PAGAMENTO DO APARTAMENTO','PAGAMENTO DO CARRO','PRESTAÇÃO DA MOTO','FACULDADE','CONDOMÍNIO','ALUGUEL','CONTA DE LUZ','CONTA DE ÁGUA','CONTA DE GÁS','INTERNET','CELULAR','CARTÃO DE CRÉDITO','PLANO DE SAÚDE','SEGURO DO CARRO','SEGURO DA MOTO','IPVA','IPTU','LICENCIAMENTO','COMBUSTÍVEL','MANUTENÇÃO DO CARRO','MANUTENÇÃO DA MOTO','EMPRÉSTIMO','FINANCIAMENTO','MERCADO','FARMÁCIA','ESCOLA / CURSO','ACADEMIA','STREAMING / ASSINATURAS','MULTA','OUTROS'];
+  var CH_LISTA_MAURO = 'opg_contas_mauro_lista_cj';
+  var FORMAS_MAURO = ['PIX','Dinheiro','Débito','Crédito','Boleto','Transferência'];
+  var cmMesAtual = null;
+  function listaContasMauro(){
+    var out = CONTAS_MAURO.slice();
+    lerLS(CH_LISTA_MAURO, []).forEach(function(n){ if (n && out.indexOf(n) < 0) out.splice(out.length - 1, 0, n); });
+    return out;
+  }
+  function contasDoMes(k){
+    return arqMauro.todos().filter(function(r){ return String(r.dataPgto || '').slice(0, 7) === k; })
+      .sort(function(a, b){ return String(a.dataPgto).localeCompare(String(b.dataPgto)) || String(a.criadoEm || '').localeCompare(String(b.criadoEm || '')); });
+  }
+  function resumoContas(lista){
+    var por = {}, total = 0;
+    lista.forEach(function(r){ var v = Number(r.valor) || 0; total += v; var c = por[r.conta] || (por[r.conta] = { conta: r.conta, n: 0, valor: 0 }); c.n++; c.valor += v; });
+    return { contas: Object.keys(por).map(function(k){ return por[k]; }).sort(function(a, b){ return b.valor - a.valor; }), total: total, n: lista.length };
+  }
+  window.gerarContasMauro = function(){
+    var el = document.getElementById('admin-mauro'); if (!el) return;
+    if (!cmMesAtual) cmMesAtual = chaveMes(new Date());
+    el.innerHTML = '<div class="cp-topo"><h3 style="color:#2c3e50;margin:0">🏠 Contas pessoais do Mauro (sócio)</h3>' +
+      '<div class="cp-sub">Registro dos pagamentos de contas pessoais do Mauro. Fica separado: não entra no faturamento nem no caixa.</div></div>' +
+      '<div class="cm-form no-print"><h4 style="color:var(--red);margin-bottom:10px">➕ Registrar pagamento</h4><div class="cm-campos">' +
+        '<div class="cm-c cm-conta"><label>Conta</label><select id="cm-conta" onchange="cmTrocarConta(this)">' + listaContasMauro().map(function(n){ return '<option value="' + esc(n) + '">' + esc(n) + '</option>'; }).join('') + '<option value="__nova__">✏️ Outra conta (digitar)...</option></select>' +
+          '<input id="cm-conta-nova" type="text" placeholder="Nome da conta (ex.: CONSÓRCIO)" style="display:none;margin-top:6px" oninput="this.value=this.value.toUpperCase()"></div>' +
+        '<div class="cm-c"><label>Valor pago (R$)</label><input id="cm-valor" type="text" inputmode="decimal" placeholder="0,00" onkeydown="if(event.key===\'Enter\')cmRegistrar()"></div>' +
+        '<div class="cm-c"><label>Data do pagamento</label><input id="cm-data" type="date" value="' + ymd(new Date()) + '"></div>' +
+        '<div class="cm-c"><label>Forma</label><select id="cm-forma">' + FORMAS_MAURO.map(function(f){ return '<option>' + f + '</option>'; }).join('') + '</select></div>' +
+        '<div class="cm-c cm-obs"><label>Observação (opcional)</label><input id="cm-obs" type="text" placeholder="Ex.: parcela 5 de 48" onkeydown="if(event.key===\'Enter\')cmRegistrar()"></div>' +
+      '</div><button class="btn btn-green" style="margin-top:12px" onclick="cmRegistrar()">✅ Registrar pagamento</button></div>' +
+      barraMes('cm', cmMesAtual) +
+      '<div id="cm-status" class="no-print" style="font-size:.8em;color:#888;margin:4px 0 10px"></div>' +
+      '<div id="cm-conteudo"></div>';
+    arqMauro.carregar(atualizarContasMauro);
+  };
+  function atualizarContasMauro(){
+    var st = document.getElementById('cm-status'); if (st) st.textContent = arqMauro.status;
+    var el = document.getElementById('cm-conteudo'); if (!el) return;
+    var lista = contasDoMes(cmMesAtual), r = resumoContas(lista);
+    if (!lista.length) { el.innerHTML = '<div class="empty"><div class="ei">🏠</div><p>Nenhuma conta registrada em ' + nomeMes(cmMesAtual) + '.</p></div>'; return; }
+    el.innerHTML = '<div class="rel-grid">' + card('Total pago no mês', brl(r.total), '#c0392b') + card('Pagamentos', r.n) + card('Contas diferentes', r.contas.length) + '</div>' +
+      '<h4 class="cp-h4">📂 Por conta</h4>' +
+      tabela(['Conta', 'Pagamentos', 'Total'], r.contas.map(function(c){ return [esc(c.conta), c.n, brl(c.valor)]; }), [0, 'r', 'r'], ['TOTAL', r.n, brl(r.total)]) +
+      '<h4 class="cp-h4">🧾 Lançamentos do mês</h4>' +
+      tabela(['Data', 'Conta', 'Forma', 'Obs', 'Valor', ''], lista.slice().reverse().map(function(x){ return [diaBR(x.dataPgto), esc(x.conta), esc(x.forma || ''), esc(x.obs || ''), brl(x.valor), botaoExcluir('cmExcluir', x.id)]; }), [0, 0, 0, 0, 'r', 'r']);
+  }
+  window.cmTrocarConta = function(sel){ var n = document.getElementById('cm-conta-nova'); var nova = sel.value === '__nova__'; n.style.display = nova ? 'block' : 'none'; if (nova) n.focus(); };
+  window.cmRegistrar = function(){
+    var conta = document.getElementById('cm-conta').value;
+    if (conta === '__nova__') {
+      conta = (document.getElementById('cm-conta-nova').value || '').trim().toUpperCase();
+      if (!conta) { alert('Digite o nome da conta.'); document.getElementById('cm-conta-nova').focus(); return; }
+      if (listaContasMauro().indexOf(conta) < 0) { var ex = lerLS(CH_LISTA_MAURO, []); ex.push(conta); gravarLS(CH_LISTA_MAURO, ex); }
+    }
+    var valor = lerValor(document.getElementById('cm-valor').value);
+    if (isNaN(valor) || valor <= 0) { alert('Informe o valor pago (ex.: 1250,00).'); document.getElementById('cm-valor').focus(); return; }
+    var data = document.getElementById('cm-data').value || ymd(new Date());
+    var rec = arqMauro.salvar({ id: novoId('cm'), criadoEm: new Date().toISOString(), dataPgto: data, conta: conta, valor: valor, forma: document.getElementById('cm-forma').value, obs: (document.getElementById('cm-obs').value || '').trim() });
+    if (!rec) return;
+    cmMesAtual = data.slice(0, 7);
+    gerarContasMauro();
+    aviso('✅ ' + conta + ': ' + brl(valor) + ' registrado');
+  };
+  window.cmMes = function(delta, valor){ cmMesAtual = valor || somaMes(cmMesAtual, delta || 0); var i = document.getElementById('cm-mes'); if (i) i.value = cmMesAtual; atualizarContasMauro(); };
+  window.cmExcluir = function(id){
+    var r = arqMauro.todos().find(function(x){ return x.id === id; }); if (!r) return;
+    if (!confirm('Excluir ' + r.conta + ' de ' + diaBR(r.dataPgto) + ' (' + brl(r.valor) + ')?\n\nNão dá para desfazer.')) return;
+    arqMauro.excluir(id); atualizarContasMauro();
+  };
+  window.cmImprimir = function(){
+    var lista = contasDoMes(cmMesAtual); if (!lista.length) { alert('Nenhuma conta registrada em ' + nomeMes(cmMesAtual) + '.'); return; }
+    var r = resumoContas(lista);
+    abrirPrint('Contas do Mauro', '<div class="recibo-print">' + cabecalhoPrint('CONTAS PESSOAIS - MAURO (SÓCIO)', cmMesAtual, 'Registro separado - fora do faturamento') +
+      r.contas.map(function(c){ return '<div class="rc-lin"><span>' + esc(c.conta) + (c.n > 1 ? ' (' + c.n + 'x)' : '') + '</span><span>' + num2(c.valor) + '</span></div>'; }).join('') +
+      '<hr><div class="rc-lin rc-big"><span>TOTAL</span><span>' + brl(r.total) + '</span></div>' +
+      '<hr><div class="rc-bold">LANÇAMENTOS</div>' +
+      lista.map(function(x){ return '<div class="rc-lin"><div class="rc-it">' + diaBR(x.dataPgto).slice(0, 5) + ' ' + esc(x.conta) + (x.forma ? ' - ' + esc(x.forma) : '') + (x.obs ? '<div>' + esc(x.obs) + '</div>' : '') + '</div><div>' + num2(x.valor) + '</div></div>'; }).join('') +
+      rodapePrint() + '</div>');
+  };
+  window.cmPlanilha = function(){
+    var lista = contasDoMes(cmMesAtual); if (!lista.length) { alert('Nenhuma conta registrada em ' + nomeMes(cmMesAtual) + '.'); return; }
+    var L = [['Data do pagamento', 'Conta', 'Forma', 'Observação', 'Valor (R$)']];
+    lista.forEach(function(x){ L.push([diaBR(x.dataPgto), x.conta, x.forma || '', x.obs || '', num2(x.valor)]); });
+    var r = resumoContas(lista);
+    L.push([]); L.push(['RESUMO POR CONTA', '', '', 'Pagamentos', 'Total (R$)']);
+    r.contas.forEach(function(c){ L.push(['', c.conta, '', c.n, num2(c.valor)]); });
+    L.push(['TOTAL ' + nomeMes(cmMesAtual).toUpperCase(), '', '', r.n, num2(r.total)]);
+    baixarCSV('contas-mauro-' + cmMesAtual + '.csv', L);
+  };
+
+  /* ================= FREEZER: estoque virtual dos pasteis ================= */
+  var CATS_PASTEL = ['Brócolis','Bauru','Carne','Carne Louca','Carne Seca','Escarola','Calabresa','Frango','Mussarela','Palmito','Pizza','Salame','Vegano','Hot Dog','Os Gigantes','Doces','Atum','Berinjela'];
+  var CH_FZ_MOV = 'opg_freezer_mov_cj';     // entradas, baixas manuais e ajustes de contagem
+  var CH_FZ_SAI = 'opg_freezer_saidas_cj';  // saidas automaticas por dia: { 'AAAA-MM-DD': { v: {idProduto: qtd}, c: {idProduto: qtd} } }
+  var MOTIVOS_BAIXA = ['iFood', 'Perda (estragou / caiu)', 'Outro'];
+  function sabores(){ return (state.produtos || []).filter(function(p){ return CATS_PASTEL.indexOf(p.cat) >= 0; }); }
+  function nomeSabor(id){ var p = getProdById(Number(id)); return p ? p.nome : ('Sabor #' + id); }
+  function ehPastel(i){ if (!i || i.id == null) return false; var cat = i.cat || ((getProdById(i.id) || {}).cat); return CATS_PASTEL.indexOf(cat) >= 0; }
+  // baixa automatica: 'v' = venda finalizada no caixa, 'c' = consumo proprio
+  window.freezerBaixaAuto = function(tipo, itens){
+    try {
+      var mapa = {}, tem = false;
+      (itens || []).forEach(function(i){ if (!ehPastel(i)) return; var q = qtdUnid(i); if (q > 0) { mapa[i.id] = r4((mapa[i.id] || 0) + q); tem = true; } });
+      if (!tem) return;
+      var s = lerLS(CH_FZ_SAI, {}), dia = ymd(new Date());
+      var d = s[dia] || (s[dia] = {}), t = d[tipo] || (d[tipo] = {});
+      Object.keys(mapa).forEach(function(id){ t[id] = r4((t[id] || 0) + mapa[id]); });
+      gravarLS(CH_FZ_SAI, s);
+    } catch(e){ console.warn('[freezer] baixa automatica', e); }
+  };
+  var _regVendaAnt = window.registrarVendaMesa;
+  window.registrarVendaMesa = function(){
+    var v = _regVendaAnt.apply(this, arguments);
+    if (v && v.todosItens) freezerBaixaAuto('v', v.todosItens);
+    return v;
+  };
+  function fzSaldos(ate){ // ate = Date (exclusivo); null = ate agora
+    var s = {};
+    function add(id, q){ s[id] = r4((s[id] || 0) + q); }
+    lerLS(CH_FZ_MOV, []).forEach(function(m){
+      if (ate && new Date(m.data) >= ate) return;
+      var sinal = m.tipo === 'baixa' ? -1 : 1; // entrada (+), baixa (-), ajuste (diferenca com sinal)
+      Object.keys(m.itens || {}).forEach(function(id){ add(id, sinal * (Number(m.itens[id]) || 0)); });
+    });
+    var sai = lerLS(CH_FZ_SAI, {});
+    Object.keys(sai).forEach(function(dia){
+      if (ate && diaData(dia) >= ate) return;
+      ['v', 'c'].forEach(function(t){ var o = (sai[dia] || {})[t] || {}; Object.keys(o).forEach(function(id){ add(id, -(Number(o[id]) || 0)); }); });
+    });
+    return s;
+  }
+
+  /* ----- tela FREEZER (botao na tela inicial) ----- */
+  var fz = { modo: 'entrada', qtd: {}, busca: '', cat: 'Todos', soEstoque: false, motivo: MOTIVOS_BAIXA[0] };
+  window.freezerTemPendente = function(){ return Object.keys(fz.qtd).length > 0; };
+  window.abrirFreezer = function(){
+    fz.qtd = {}; fz.busca = ''; fz.cat = 'Todos'; fz.modo = 'entrada'; fz.soEstoque = false;
+    mostrarTela('tela-freezer');
+    renderFreezer();
+    window.scrollTo(0, 0);
+  };
+  function renderFreezer(){
+    var el = document.getElementById('fz-corpo'); if (!el) return;
+    var saldos = fzSaldos(null), lista = sabores(), totNo = 0, comEst = 0, zerados = 0;
+    lista.forEach(function(p){ var s = saldos[p.id] || 0; if (s > 0) { totNo += s; comEst++; } else zerados++; });
+    var baixa = fz.modo === 'baixa';
+    var cats = ['Todos'].concat(CATS_PASTEL.filter(function(c){ return lista.some(function(p){ return p.cat === c; }); }));
+    el.innerHTML =
+      '<div class="fz-cards">' +
+        '<div class="fz-card"><div class="l">Pastéis no freezer agora</div><div class="v">' + fmtQ(totNo) + '</div></div>' +
+        '<div class="fz-card"><div class="l">Sabores com estoque</div><div class="v">' + comEst + '</div></div>' +
+        '<div class="fz-card"><div class="l">Sabores zerados</div><div class="v" style="color:#c0392b">' + zerados + '</div></div>' +
+      '</div>' +
+      '<div class="fz-modos">' +
+        '<button class="fz-modo' + (!baixa ? ' on' : '') + '" onclick="fzModo(\'entrada\')">➕ Entrada no freezer</button>' +
+        '<button class="fz-modo baixa' + (baixa ? ' on' : '') + '" onclick="fzModo(\'baixa\')">➖ Baixa manual (iFood / perda)</button>' +
+      '</div>' +
+      '<div class="fz-info' + (baixa ? ' baixa' : '') + '">' + (baixa
+        ? 'Use para o que saiu do freezer <b>sem passar pelo caixa</b>: pedidos do iFood, pastel que estragou ou caiu. As vendas do caixa e o Consumo Próprio já dão baixa sozinhos.'
+        : 'Digite quantos pastéis de cada sabor <b>entraram</b> no freezer e toque em <b>Confirmar entrada</b>. Quando vender (ou lançar Consumo Próprio), o estoque baixa sozinho.') + '</div>' +
+      '<input class="fz-busca" id="fz-busca" type="text" placeholder="🔍 Buscar sabor ou número..." value="' + esc(fz.busca) + '" oninput="fzBuscar(this.value)">' +
+      '<div class="fz-filtros">' + cats.map(function(c){ return '<button class="ftag' + (c === fz.cat ? ' on' : '') + '" onclick="fzCat(\'' + c + '\')">' + esc(c) + '</button>'; }).join('') +
+        '<label style="font-size:.8em;color:#555;display:inline-flex;align-items:center;gap:5px;margin-left:6px;cursor:pointer"><input type="checkbox"' + (fz.soEstoque ? ' checked' : '') + ' onchange="fzSoEstoque(this.checked)"> Só sabores com estoque</label>' +
+      '</div>' +
+      '<div id="fz-lista"></div>' +
+      '<div class="fz-hist" id="fz-hist"></div>' +
+      '<div class="fz-rodape" id="fz-rodape"></div>';
+    renderFzLista(saldos);
+    renderFzRodape();
+    renderFzHist();
+  }
+  function renderFzLista(saldos){
+    saldos = saldos || fzSaldos(null);
+    var el = document.getElementById('fz-lista'); if (!el) return;
+    var b = (fz.busca || '').toLowerCase().trim();
+    var lista = sabores().filter(function(p){
+      if (fz.cat !== 'Todos' && p.cat !== fz.cat) return false;
+      if (b && (p.nome + ' ' + p.cat + ' ' + p.id).toLowerCase().indexOf(b) < 0) return false;
+      if (fz.soEstoque && !((saldos[p.id] || 0) > 0)) return false;
+      return true;
+    });
+    if (!lista.length) { el.innerHTML = '<div class="empty"><div class="ei">🧊</div><p>Nenhum sabor encontrado.</p></div>'; return; }
+    var html = '';
+    CATS_PASTEL.forEach(function(cat){
+      var itens = lista.filter(function(p){ return p.cat === cat; }); if (!itens.length) return;
+      html += '<div class="fz-cat"><h4>' + esc(cat) + '</h4>' + itens.map(function(p){
+        var s = saldos[p.id] || 0, q = fz.qtd[p.id] || '';
+        return '<div class="fz-row' + (q ? ' tem' : '') + '" id="fzr-' + p.id + '">' +
+          '<div class="fz-nome">' + (p.id < 1000 ? '<span class="fz-num">' + p.id + '</span>' : '') + esc(p.nome) + '</div>' +
+          '<div class="fz-saldo' + (s < 0 ? ' neg' : (s === 0 ? ' zero' : '')) + '">' + fmtQ(s) + '<small>no freezer</small></div>' +
+          '<div class="fz-ctrl"><button class="m" onclick="fzSomar(' + p.id + ',-1)">−</button>' +
+          '<input type="number" min="0" step="1" inputmode="numeric" id="fzq-' + p.id + '" value="' + q + '" placeholder="0" oninput="fzDigitar(' + p.id + ',this.value)">' +
+          '<button onclick="fzSomar(' + p.id + ',1)">+</button></div>' +
+        '</div>';
+      }).join('') + '</div>';
+    });
+    el.innerHTML = html;
+  }
+  function renderFzRodape(){
+    var el = document.getElementById('fz-rodape'); if (!el) return;
+    var ids = Object.keys(fz.qtd), tot = ids.reduce(function(s, id){ return s + fz.qtd[id]; }, 0), baixa = fz.modo === 'baixa';
+    el.className = 'fz-rodape' + (baixa ? ' baixa' : '');
+    el.innerHTML = '<span class="resumo">' + (tot ? (baixa ? '➖ Baixa: ' : '➕ Entrada: ') + tot + ' pastel(éis) em ' + ids.length + ' sabor(es)' : (baixa ? 'Digite quantos saíram de cada sabor' : 'Digite quantos entraram de cada sabor')) + '</span>' +
+      (baixa ? '<select id="fz-motivo" onchange="fzMotivo(this.value)">' + MOTIVOS_BAIXA.map(function(m){ return '<option' + (m === fz.motivo ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select>' : '') +
+      (tot ? '<button class="btn btn-gray btn-sm" onclick="fzLimpar()">Limpar</button>' : '') +
+      '<button class="btn ' + (baixa ? 'btn-red' : 'btn-blue') + '"' + (tot ? '' : ' disabled style="opacity:.5;cursor:default"') + ' onclick="fzConfirmar()">✅ Confirmar ' + (baixa ? 'baixa' : 'entrada') + '</button>';
+  }
+  function renderFzHist(){
+    var el = document.getElementById('fz-hist'); if (!el) return;
+    var movs = lerLS(CH_FZ_MOV, []).slice(-8).reverse();
+    if (!movs.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<h4 style="color:#2980b9;margin-bottom:8px">📜 Últimos lançamentos</h4>' + movs.map(function(m){
+      var ids = Object.keys(m.itens || {}), tot = ids.reduce(function(s, id){ return s + (Number(m.itens[id]) || 0); }, 0), aj = m.tipo === 'ajuste';
+      var tipo = m.tipo === 'entrada' ? '➕ Entrada' : (m.tipo === 'baixa' ? '➖ Baixa · ' + esc(m.motivo || '') : '📋 Ajuste de contagem');
+      return '<div class="it"><b>' + dataHora(m.data) + '</b> · ' + tipo + ' · ' + (aj && tot > 0 ? '+' : '') + fmtQ(tot) + ' pastel(éis)' +
+        '<div style="color:#777;margin-top:2px">' + ids.map(function(id){ return (aj && m.itens[id] > 0 ? '+' : '') + fmtQ(m.itens[id]) + 'x ' + esc((m.nomes && m.nomes[id]) || nomeSabor(id)); }).join(', ') + '</div></div>';
+    }).join('');
+  }
+  window.fzDigitar = function(id, v){
+    var n = Math.max(0, Math.floor(Number(v) || 0));
+    if (n) fz.qtd[id] = n; else delete fz.qtd[id];
+    var r = document.getElementById('fzr-' + id); if (r) r.classList.toggle('tem', !!n);
+    renderFzRodape();
+  };
+  window.fzSomar = function(id, d){
+    var n = Math.max(0, (fz.qtd[id] || 0) + d);
+    if (n) fz.qtd[id] = n; else delete fz.qtd[id];
+    var i = document.getElementById('fzq-' + id); if (i) i.value = n || '';
+    var r = document.getElementById('fzr-' + id); if (r) r.classList.toggle('tem', !!n);
+    renderFzRodape();
+  };
+  window.fzBuscar = function(v){ fz.busca = v; renderFzLista(); };
+  window.fzCat = function(c){ fz.cat = c; renderFreezer(); };
+  window.fzSoEstoque = function(on){ fz.soEstoque = !!on; renderFzLista(); };
+  window.fzMotivo = function(m){ fz.motivo = m; };
+  window.fzLimpar = function(){ fz.qtd = {}; renderFzLista(); renderFzRodape(); };
+  window.fzModo = function(m){
+    if (m === fz.modo) return;
+    if (Object.keys(fz.qtd).length && !confirm('Trocar de modo apaga as quantidades digitadas. Continuar?')) return;
+    fz.modo = m; fz.qtd = {}; renderFreezer();
+  };
+  window.fzConfirmar = function(){
+    var ids = Object.keys(fz.qtd).filter(function(id){ return fz.qtd[id] > 0; });
+    if (!ids.length) { alert('Digite a quantidade em pelo menos um sabor.'); return; }
+    var baixa = fz.modo === 'baixa', tot = 0, itens = {}, nomes = {};
+    ids.forEach(function(id){ itens[id] = fz.qtd[id]; tot += fz.qtd[id]; nomes[id] = nomeSabor(id); });
+    var motivo = baixa ? (fz.motivo || MOTIVOS_BAIXA[0]) : 'Entrada no freezer';
+    var linhas = ids.map(function(id){ return itens[id] + 'x ' + nomes[id]; });
+    if (!confirm((baixa ? 'Dar BAIXA de ' : 'Lançar ENTRADA de ') + tot + ' pastel(éis) no freezer:\n\n' + linhas.slice(0, 20).join('\n') + (linhas.length > 20 ? '\n... e mais ' + (linhas.length - 20) : '') + (baixa ? '\n\nMotivo: ' + motivo : '') + '\n\nConfirmar?')) return;
+    var movs = lerLS(CH_FZ_MOV, []);
+    movs.push({ id: novoId('fz'), data: new Date().toISOString(), tipo: baixa ? 'baixa' : 'entrada', motivo: motivo, itens: itens, nomes: nomes });
+    if (!gravarLS(CH_FZ_MOV, movs)) return;
+    fz.qtd = {};
+    renderFreezer();
+    aviso((baixa ? '➖ Baixa de ' : '✅ Entrada de ') + tot + ' pastel(éis) registrada', baixa ? '#c0392b' : '#2980b9');
+  };
+
+  /* ----- relatorio + contagem do FREEZER (Gerencial) ----- */
+  var frMesAtual = null, frContagem = null, frSaldosCont = {};
+  function relFreezer(k){
+    var ini = inicioMes(k), fim = inicioMes(somaMes(k, 1)), s0 = fzSaldos(ini), mov = {}, nomesMov = {};
+    function m(id){ return mov[id] || (mov[id] = { ent: 0, ven: 0, con: 0, bai: 0, aju: 0 }); }
+    lerLS(CH_FZ_MOV, []).forEach(function(x){
+      Object.keys(x.nomes || {}).forEach(function(id){ nomesMov[id] = x.nomes[id]; });
+      var d = new Date(x.data); if (!(d >= ini && d < fim)) return;
+      Object.keys(x.itens || {}).forEach(function(id){ var q = Number(x.itens[id]) || 0; if (x.tipo === 'entrada') m(id).ent += q; else if (x.tipo === 'baixa') m(id).bai += q; else m(id).aju += q; });
+    });
+    var sai = lerLS(CH_FZ_SAI, {});
+    Object.keys(sai).forEach(function(dia){
+      var d = diaData(dia); if (!(d >= ini && d < fim)) return;
+      var o = sai[dia] || {};
+      Object.keys(o.v || {}).forEach(function(id){ m(id).ven += Number(o.v[id]) || 0; });
+      Object.keys(o.c || {}).forEach(function(id){ m(id).con += Number(o.c[id]) || 0; });
+    });
+    var ids = sabores().map(function(p){ return String(p.id); });
+    Object.keys(mov).concat(Object.keys(s0)).forEach(function(id){ if (ids.indexOf(String(id)) < 0) ids.push(String(id)); }); // inclui sabor que saiu do cardapio mas teve movimento
+    var linhas = [], tot = { ini: 0, ent: 0, ven: 0, con: 0, bai: 0, aju: 0, fim: 0 };
+    ids.forEach(function(id){
+      var x = mov[id] || { ent: 0, ven: 0, con: 0, bai: 0, aju: 0 }, i0 = s0[id] || 0;
+      if (!i0 && !x.ent && !x.ven && !x.con && !x.bai && !x.aju) return;
+      var f = r4(i0 + x.ent - x.ven - x.con - x.bai + x.aju);
+      var p = getProdById(Number(id));
+      linhas.push({ id: id, nome: p ? p.nome : (nomesMov[id] || ('Sabor #' + id)), ini: i0, ent: x.ent, ven: x.ven, con: x.con, bai: x.bai, aju: x.aju, fim: f });
+      tot.ini += i0; tot.ent += x.ent; tot.ven += x.ven; tot.con += x.con; tot.bai += x.bai; tot.aju += x.aju; tot.fim += f;
+    });
+    return { linhas: linhas, tot: tot };
+  }
+  window.gerarRelFreezer = function(){
+    var el = document.getElementById('admin-freezer'); if (!el) return;
+    if (!frMesAtual) frMesAtual = chaveMes(new Date());
+    frContagem = null;
+    el.innerHTML = '<div class="cp-topo"><h3 style="color:#2980b9;margin:0">🧊 Freezer: estoque de pastéis</h3>' +
+      '<div class="cp-sub">Entradas e baixas manuais são lançadas no botão <b>🧊 FREEZER</b> da tela inicial. Vendas do caixa e Consumo Próprio dão baixa sozinhos. Use a <b>contagem</b> para conferir o freezer de verdade com o sistema.</div></div>' +
+      barraMes('fr', frMesAtual) +
+      '<div id="fr-conteudo"></div>';
+    atualizarRelFreezer();
+  };
+  function atualizarRelFreezer(){
+    var el = document.getElementById('fr-conteudo'); if (!el) return;
+    var r = relFreezer(frMesAtual), t = r.tot, agora = fzSaldos(null), noFreezer = 0;
+    sabores().forEach(function(p){ var s = agora[p.id] || 0; if (s > 0) noFreezer += s; });
+    var html = '<div class="rel-grid">' +
+      card('No freezer agora', fmtQ(noFreezer), '#2980b9') + card('Entraram no mês', fmtQ(t.ent)) +
+      card('Saíram no mês', fmtQ(t.ven + t.con + t.bai), '#c0392b') +
+      card('Ajustes de contagem', (t.aju > 0 ? '+' : '') + fmtQ(t.aju), t.aju < 0 ? '#c0392b' : '#27ae60') +
+      '</div>' +
+      '<div class="no-print" style="margin:6px 0 4px"><button class="btn btn-blue btn-sm" onclick="frAbrirContagem()">📋 Fazer contagem do freezer</button></div>' +
+      '<div id="fr-contagem"></div>';
+    if (!r.linhas.length) html += '<div class="empty"><div class="ei">🧊</div><p>Nenhum movimento no freezer em ' + nomeMes(frMesAtual) + '.</p></div>';
+    else html += '<h4 class="cp-h4">📦 Movimento por sabor · ' + nomeMes(frMesAtual) + '</h4>' +
+      tabela(['Sabor', 'Início do mês', 'Entrou', 'Vendas', 'Consumo próprio', 'Baixas', 'Ajuste', 'Fim do mês'],
+        r.linhas.map(function(l){ return [esc(l.nome), fmtQ(l.ini), fmtQ(l.ent), fmtQ(l.ven), fmtQ(l.con), fmtQ(l.bai), (l.aju > 0 ? '+' : '') + fmtQ(l.aju), '<b' + (l.fim < 0 ? ' style="color:#c0392b"' : '') + '>' + fmtQ(l.fim) + '</b>']; }),
+        [0, 'r', 'r', 'r', 'r', 'r', 'r', 'r'],
+        ['TOTAL', fmtQ(t.ini), fmtQ(t.ent), fmtQ(t.ven), fmtQ(t.con), fmtQ(t.bai), (t.aju > 0 ? '+' : '') + fmtQ(t.aju), fmtQ(t.fim)]);
+    var ini = inicioMes(frMesAtual), fim = inicioMes(somaMes(frMesAtual, 1));
+    var movs = lerLS(CH_FZ_MOV, []).filter(function(m){ var d = new Date(m.data); return d >= ini && d < fim; }).reverse();
+    if (movs.length) html += '<h4 class="cp-h4">🧾 Lançamentos manuais do mês</h4>' +
+      tabela(['Data/hora', 'Tipo', 'Sabores', 'Qtd', ''], movs.map(function(m){
+        var ids = Object.keys(m.itens || {}), tot = ids.reduce(function(s, id){ return s + (Number(m.itens[id]) || 0); }, 0), aj = m.tipo === 'ajuste';
+        return [dataHora(m.data), m.tipo === 'entrada' ? '➕ Entrada' : (m.tipo === 'baixa' ? '➖ Baixa (' + esc(m.motivo || '') + ')' : '📋 Ajuste de contagem'),
+          esc(ids.map(function(id){ return (aj && m.itens[id] > 0 ? '+' : '') + fmtQ(m.itens[id]) + 'x ' + ((m.nomes && m.nomes[id]) || nomeSabor(id)); }).join(', ')),
+          (aj && tot > 0 ? '+' : '') + fmtQ(tot), botaoExcluir('frExcluir', m.id)];
+      }), [0, 0, 0, 'r', 'r']);
+    el.innerHTML = html;
+    renderContagem();
+  }
+  function difHtml(d){ if (d === '' || d === undefined || d === null) return ''; d = Number(d); if (!d) return '<span style="color:#27ae60;font-weight:700">ok</span>'; return '<b style="color:' + (d < 0 ? '#c0392b' : '#27ae60') + '">' + (d > 0 ? '+' : '') + fmtQ(d) + '</b>'; }
+  function renderContagem(){
+    var el = document.getElementById('fr-contagem'); if (!el) return;
+    if (!frContagem) { el.innerHTML = ''; return; }
+    frSaldosCont = fzSaldos(null);
+    el.innerHTML = '<div class="cm-form" style="border-color:rgba(41,128,185,.4)"><h4 style="color:#2980b9;margin-bottom:6px">📋 Contagem do freezer</h4>' +
+      '<div class="cp-sub" style="margin-bottom:10px">Conte os pastéis de cada sabor no freezer e digite ao lado. Só os sabores preenchidos são conferidos; a diferença vira um <b>ajuste</b> no relatório.</div>' +
+      '<input class="fz-busca" placeholder="🔍 Buscar sabor..." oninput="frFiltrarContagem(this.value)" style="margin-bottom:8px">' +
+      '<div class="cp-tab-wrap"><table><thead><tr><th>Sabor</th><th class="r">No sistema</th><th class="r">Contado</th><th class="r">Diferença</th></tr></thead><tbody>' +
+      sabores().map(function(p){
+        var sis = frSaldosCont[p.id] || 0, v = frContagem[p.id];
+        return '<tr data-busca="' + esc((p.nome + ' ' + p.cat + ' ' + p.id).toLowerCase()) + '"><td>' + (p.id < 1000 ? '<span class="fz-num">' + p.id + '</span>' : '') + esc(p.nome) + ' <small style="color:#999">' + esc(p.cat) + '</small></td>' +
+          '<td class="r">' + fmtQ(sis) + '</td>' +
+          '<td class="r"><input type="number" min="0" step="1" inputmode="numeric" value="' + (v === undefined ? '' : v) + '" oninput="frDigitarContagem(' + p.id + ',this.value)" style="width:70px;padding:5px;text-align:center;border:2px solid rgba(41,128,185,.35);border-radius:7px;font-weight:700;color:#222"></td>' +
+          '<td class="r" id="frdif-' + p.id + '">' + (v === undefined ? '' : difHtml(r4(v - sis))) + '</td></tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-gray btn-sm" onclick="frFecharContagem()">Cancelar</button><button class="btn btn-blue" onclick="frSalvarContagem()">✅ Salvar contagem</button></div></div>';
+  }
+  window.frAbrirContagem = function(){ frContagem = frContagem || {}; renderContagem(); var c = document.getElementById('fr-contagem'); if (c && c.scrollIntoView) c.scrollIntoView({behavior: 'smooth', block: 'start'}); };
+  window.frFecharContagem = function(){ frContagem = null; renderContagem(); };
+  window.frFiltrarContagem = function(v){ v = (v || '').toLowerCase().trim(); document.querySelectorAll('#fr-contagem tr[data-busca]').forEach(function(tr){ tr.style.display = !v || tr.getAttribute('data-busca').indexOf(v) >= 0 ? '' : 'none'; }); };
+  window.frDigitarContagem = function(id, v){
+    if (!frContagem) frContagem = {};
+    if (v === '' || v == null) delete frContagem[id]; else frContagem[id] = Math.max(0, Math.floor(Number(v) || 0));
+    var td = document.getElementById('frdif-' + id);
+    if (td) td.innerHTML = frContagem[id] === undefined ? '' : difHtml(r4(frContagem[id] - (frSaldosCont[id] || 0)));
+  };
+  window.frSalvarContagem = function(){
+    var s = fzSaldos(null), itens = {}, nomes = {}, n = 0, linhas = [], conferidos = Object.keys(frContagem || {});
+    if (!conferidos.length) { alert('Digite a contagem de pelo menos um sabor.'); return; }
+    conferidos.forEach(function(id){
+      var dif = r4(Number(frContagem[id]) - (s[id] || 0));
+      if (dif) { itens[id] = dif; nomes[id] = nomeSabor(id); n++; linhas.push((dif > 0 ? '+' : '') + fmtQ(dif) + '  ' + nomes[id]); }
+    });
+    if (!n) { alert('Tudo certo! Os ' + conferidos.length + ' sabor(es) conferidos batem com o sistema.'); frContagem = null; atualizarRelFreezer(); return; }
+    if (!confirm('Contagem de ' + conferidos.length + ' sabor(es). Diferenças:\n\n' + linhas.slice(0, 25).join('\n') + (linhas.length > 25 ? '\n...' : '') + '\n\nSalvar o ajuste? O estoque do sistema passa a ser o que foi contado.')) return;
+    var movs = lerLS(CH_FZ_MOV, []);
+    movs.push({ id: novoId('fz'), data: new Date().toISOString(), tipo: 'ajuste', motivo: 'Contagem', itens: itens, nomes: nomes });
+    if (!gravarLS(CH_FZ_MOV, movs)) return;
+    frContagem = null;
+    atualizarRelFreezer();
+    aviso('📋 Contagem salva: ' + n + ' ajuste(s)', '#2980b9');
+  };
+  window.frExcluir = function(id){
+    var movs = lerLS(CH_FZ_MOV, []), m = movs.find(function(x){ return x.id === id; }); if (!m) return;
+    if (!confirm('Excluir este lançamento do freezer (' + dataHora(m.data) + ')?\n\nO estoque volta a ser como era sem ele.')) return;
+    gravarLS(CH_FZ_MOV, movs.filter(function(x){ return x.id !== id; }));
+    atualizarRelFreezer();
+  };
+  window.frMes = function(delta, valor){ frMesAtual = valor || somaMes(frMesAtual, delta || 0); var i = document.getElementById('fr-mes'); if (i) i.value = frMesAtual; atualizarRelFreezer(); };
+  window.frImprimir = function(){
+    var r = relFreezer(frMesAtual), t = r.tot;
+    if (!r.linhas.length) { alert('Nenhum movimento no freezer em ' + nomeMes(frMesAtual) + '.'); return; }
+    abrirPrint('Freezer', '<div class="recibo-print">' + cabecalhoPrint('ESTOQUE DO FREEZER (PASTÉIS)', frMesAtual) +
+      '<div class="rc-lin"><span>Início do mês</span><span>' + fmtQ(t.ini) + '</span></div>' +
+      '<div class="rc-lin"><span>+ Entrou</span><span>' + fmtQ(t.ent) + '</span></div>' +
+      '<div class="rc-lin"><span>- Vendas</span><span>' + fmtQ(t.ven) + '</span></div>' +
+      '<div class="rc-lin"><span>- Consumo próprio</span><span>' + fmtQ(t.con) + '</span></div>' +
+      '<div class="rc-lin"><span>- Baixas (iFood/perda)</span><span>' + fmtQ(t.bai) + '</span></div>' +
+      '<div class="rc-lin"><span>Ajustes de contagem</span><span>' + (t.aju > 0 ? '+' : '') + fmtQ(t.aju) + '</span></div>' +
+      '<div class="rc-lin rc-big"><span>FIM DO MÊS</span><span>' + fmtQ(t.fim) + '</span></div>' +
+      '<hr><div class="rc-bold">POR SABOR (início + entrou - saiu = fim)</div>' +
+      r.linhas.map(function(l){ return '<div class="rc-it">' + esc(l.nome) + '<div>' + fmtQ(l.ini) + ' + ' + fmtQ(l.ent) + ' - ' + fmtQ(l.ven + l.con + l.bai) + (l.aju ? ' (ajuste ' + (l.aju > 0 ? '+' : '') + fmtQ(l.aju) + ')' : '') + ' = ' + fmtQ(l.fim) + '</div></div>'; }).join('') +
+      rodapePrint() + '</div>');
+  };
+  window.frPlanilha = function(){
+    var r = relFreezer(frMesAtual), t = r.tot;
+    if (!r.linhas.length) { alert('Nenhum movimento no freezer em ' + nomeMes(frMesAtual) + '.'); return; }
+    var L = [['Sabor', 'Início do mês', 'Entrou', 'Vendas', 'Consumo próprio', 'Baixas (iFood/perda)', 'Ajuste contagem', 'Fim do mês']];
+    r.linhas.forEach(function(l){ L.push([l.nome, fmtQ(l.ini), fmtQ(l.ent), fmtQ(l.ven), fmtQ(l.con), fmtQ(l.bai), fmtQ(l.aju), fmtQ(l.fim)]); });
+    L.push(['TOTAL', fmtQ(t.ini), fmtQ(t.ent), fmtQ(t.ven), fmtQ(t.con), fmtQ(t.bai), fmtQ(t.aju), fmtQ(t.fim)]);
+    baixarCSV('freezer-' + frMesAtual + '.csv', L);
+  };
+
+  /* ================= TECLA ESC: fecha a janela aberta ou volta para as mesas ================= */
+  function visivel(el){ return !!el && el.offsetParent !== null; }
+  function caixaObrigatorio(){
+    try { var c = getCaixaAtual(); return !(c && c.status === 'aberto' && _caixaDia(new Date(c.abertura)) === _caixaDia()); } catch(e){ return false; }
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape' && e.key !== 'Esc') return;
+    var calc = document.getElementById('calc-flutuante'); if (calc) { calc.remove(); return; }
+    var menu = document.getElementById('menu-ferramentas'); if (menu && menu.style.display === 'block') { menu.style.display = 'none'; return; }
+    var toast = document.getElementById('toast-restante'); if (toast) { toast.remove(); return; }
+    var av = document.getElementById('aviso-atualizacao-ov'); if (av) { var b1 = av.querySelector('button'); if (b1) b1.click(); else av.remove(); return; }
+    var mig = document.getElementById('mig-overlay');
+    if (mig) { var b2 = Array.prototype.find.call(mig.querySelectorAll('button'), function(b){ return /agora n/i.test(b.textContent) && b.style.display !== 'none'; }); if (b2) b2.click(); return; }
+    var mu = document.getElementById('modal-update'); if (mu && mu.style.display === 'flex') { if (window.fecharUpdate) fecharUpdate(); else mu.style.display = 'none'; return; }
+    var mc = document.getElementById('modal-cliente'); if (mc && mc.classList.contains('show')) { if (window.fecharCadastroCliente) fecharCadastroCliente(); return; }
+    var abertos = document.querySelectorAll('.modal.show');
+    if (abertos.length) {
+      var md = abertos[abertos.length - 1];
+      if (md.id === 'modal-caixa' && caixaObrigatorio()) return; // abertura/fechamento obrigatorio do caixa nao fecha com ESC
+      fecharModal(md.id);
+      if (md.id === 'modal-recibo' || md.id === 'modal-consumo-ok') irMesas();
+      return;
+    }
+    if (document.activeElement && document.activeElement.blur && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) document.activeElement.blur();
+    var tela = document.querySelector('.tela.ativa'); if (!tela) return;
+    if (tela.id === 'tela-pdv') { voltarMesas(); return; }
+    if (tela.id === 'tela-freezer') { if (window.freezerTemPendente() && !confirm('Sair sem confirmar as quantidades digitadas?')) return; irMesas(); return; }
+    if (tela.id === 'tela-admin' || tela.id === 'tela-admin-login') { irMesas(); return; }
+  });
 })();
 </script>
 </body>
